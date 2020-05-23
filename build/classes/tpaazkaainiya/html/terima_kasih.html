@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang = "en">
+   <head>
+      <!-- Meta tags -->
+      <meta charset = "utf-8">
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1, shrink-to-fit = no">
+      
+      <!-- Bootstrap CSS -->      
+      <title>Terima kasih</title>
+      <style type = "text/css">
+          .smallbtn {
+            height: 5px !important;
+        }
+      </style>
+   </head>
+   
+   <body>
+      <div class = "container">
+         <h2 class = "text-center">Terima kasih untuk petunjuk, bimbingan dan diskusi dari senior dan rekan-rekan</h2>
+         <p class="text-justify">
+             &nbsp;&nbsp;&nbsp;&nbsp; Pengembang sampaikan terima kasih kepada orang-orang dikeliling pengembang, 
+             yang telah sangat membantu mendukung pengembang dalam membangun aplikasi ini
+             antara lain :
+         </p>
+      
+           <ol type="1">
+                <li><a href="#">om Yohanes Nugroho</a>, atas semua petunjuk dan bimbingannya dalam belajar pemrograman <button class="test btn btn-primary btn-xs" data-clipboard-text="https://www.facebook.com/yohanes">copy link</button></li>
+           </ol>
+         <p><b>Rekan-rekan Teknik Informatika UNINDRA</b></p>
+           <ol type="1">               
+                <li>Fahmi Alamsyah</li>
+                <li>Syndi Kartika Putri</li>
+                <li>Rezal Firmansyah</li>
+                <li>Feri Irawan</li>
+                <li>Budi Hariyanto</li>
+                <li>Linda Siti Chotijah</li>
+                <li>Hana Pertiwi</li>
+                <li>Lailul Huda Al Fauziah</li>
+                <li>M. Lukman Hakim</li>
+                <li>Fiterman Lase</li>
+                <li>Ahmad Fadillah</li>
+                <li>Deden Iskandar</li>
+                <li>Muhammad Iqbal</li>
+                <li>Aries Rahmanto</li>
+                <li>Yunita Suhesti Novamila</li>
+                <li>Setiyo Winarto</li>
+                <li>Mahfut Samiul Alim</li>
+                <li>Pajri Ardiansyah</li>
+                <li>Henrico Stefanus Rares</li>
+                <li>Adih Ibrahim</li>
+                <li>Widaningsih</li>
+                <li>Renaldiansyah</li>
+                <li>Muhamad Reynaldi</li>
+                <li>Hilmi Muhamad Salim</li>
+                <li>Gunawan Saputra</li>
+                <li>Mila Sari</li>
+                <li>Muhammad Hilman</li>
+                <li>Dela Panji Yudistira</li>
+                <li>Okta Kartiko Dwi Winarno</li>
+                <li>Imam Nawawi</li>
+                <li>Yoga Pratama</li>
+                <li>Abdul Ayub</li>
+                <li>Septia Ardila</li>
+                <li>Muhamad Ali Musofi</li>
+                <li>Misan</li>
+                <li>Azhar Ibrahim</li>
+                <li>Bayu Adi Putra</li>
+                <li>Dhidhid Dwi Julianto</li>            
+            </ol>
+           
+       </div>
+       
+      
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="clipboard.min.js"></script>
+      <script src="jquery.min.js"></script>
+      <script src="bootstrap.min.js"></script>
+      <link href="bootstrap.min.css" rel="stylesheet"/>
+      <script>
+                    // Tooltip
+        $('.test').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+
+        function setTooltip(btn, message) {
+          btn.tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+        }
+
+        function hideTooltip(btn) {
+          setTimeout(function() {
+            btn.tooltip('hide');
+          }, 1000);
+        }
+
+        var clipboard = new Clipboard('.test');
+
+        clipboard.on('success', function(e) {
+            var btn = $(e.trigger);
+          setTooltip(btn, 'Copied');
+          hideTooltip(btn);
+        });
+      </script>
+      
+         
+   </body>
+</html>
