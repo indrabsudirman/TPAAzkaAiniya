@@ -19,7 +19,7 @@ public class ConnectionDatabase {
     
     public Connection connection;
     public Statement statement;
-    public Connection connect(){
+    public Connection connect() throws SQLException{
         
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -35,6 +35,14 @@ public class ConnectionDatabase {
             JOptionPane.showMessageDialog(null, "Gagal koneksi database " + e, "Error", JOptionPane.ERROR_MESSAGE);
 //            System.out.println("Gagal koneksi database " + e);
         }
+        
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        System.out.println(  "create connection called from " + st[2] );
+        
+//        connection.close();
+        
+        
+        
         return connection;
     }
     

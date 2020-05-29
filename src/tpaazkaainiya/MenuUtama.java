@@ -35,8 +35,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import static tpaazkaainiya.Login.jTextField1;
+import tpaazkaainiya.code.TPAAzkaAiniya;
 
 public class MenuUtama extends javax.swing.JFrame {
+    
+    
     
    
     
@@ -576,12 +579,18 @@ public class MenuUtama extends javax.swing.JFrame {
         this.dispose();         
     }//GEN-LAST:event_jButton2ActionPerformed
     Pembelajaran belajar;
+//    TPAAzkaAiniya tpaAzkaAiniya;
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         String username = jTextField1.getText();
         belajar.setUsername(username);
         belajar.setVisible(true); 
         this.dispose();
+//        try {
+//            tpaAzkaAiniya.comboBoxNamaSiswaInputNilai();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_jButton3ActionPerformed
     SPP sPP = new SPP();
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

@@ -26,7 +26,9 @@ import java.awt.Component;
 import java.awt.Font;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -43,8 +45,12 @@ public final class Pembelajaran extends javax.swing.JFrame {
     TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
     NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ID"));
     NumberFormat moneyFormat;
-    
-    static double DEFAULT_AMOUNT = 0;
+    String month[] = {"Januari", "Februari", "Maret", "April", "Mei",
+    "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+    Date hariPembelajaran = new Date ();
+    SimpleDateFormat formatTanggal = new SimpleDateFormat ("dd.MM.yyyy"); 
+    int tahun;
+    GregorianCalendar gCalender = new GregorianCalendar();
     
             
     
@@ -57,8 +63,10 @@ public final class Pembelajaran extends javax.swing.JFrame {
     public Pembelajaran() throws SQLException {
         initComponents();
         showDateAndTime();
-        tpaAzkaAiniya.kodePembelajaranTesting();
-        tpaAzkaAiniya.comboBoxNamaSiswa();
+//        tpaAzkaAiniya.kodePembelajaranTesting();
+//        tpaAzkaAiniya.comboBoxNamaSiswa();
+//        tpaAzkaAiniya.comboBoxNamaSiswaInputNilai();
+//        tpaAzkaAiniya.comboBoxPembelajaranSiswaInputNilai();
         jLabel1.setForeground(white);
         jLabel6.setForeground(white);
         //Kode BL di input pembelajaran
@@ -68,9 +76,13 @@ public final class Pembelajaran extends javax.swing.JFrame {
         jTextField20.setEditable(false); //Nama pembelajaran di Pembelajaran siswa
         jFormattedTextField3.setEditable(false); //Biaya pembelajaran di Pembelajaran siswa
         jTextField21.setEditable(false); //Nama Siswa di Pembelajaran siswa
-//        jComboBox3.setRenderer(new MyComboRenderer("Pilih Kode Pembelajaran")); 
-        
-        
+        jTextField25.setEditable(false); //Nama Siswa di Input nilai
+        jTextField26.setEditable(false); //Nama Pembelajaran di Input nilai
+        jTextField27.setEditable(false); //Tanggal Pembelajaran di Input nilai
+        String tanggalHariIni = String.valueOf(gCalender.get(Calendar.DATE));// + " " + month[gCalender.get(Calendar.MONTH)] + " " + tahun = gCalender.get(Calendar.YEAR);
+        String bulanHariIni = String.valueOf(month[gCalender.get(Calendar.MONTH)]);
+        String tahunHariIni = String.valueOf(tahun = gCalender.get(Calendar.YEAR));
+        jTextField27.setText(tanggalHariIni + " " + bulanHariIni + " " + tahunHariIni);
         
         
 
@@ -91,6 +103,8 @@ public final class Pembelajaran extends javax.swing.JFrame {
         jTextField20.setEditable(false); //Nama pembelajaran di Pembelajaran siswa
         jFormattedTextField3.setEditable(false); //Biaya pembelajaran di Pembelajaran siswa
         jTextField21.setEditable(false); //Nama Siswa di Pembelajaran siswa
+        jTextField25.setEditable(false); //Nama Siswa di Input nilai
+        jTextField26.setEditable(false); //Nama Pembelajaran di Input nilai
         
     }
     
@@ -206,12 +220,14 @@ public final class Pembelajaran extends javax.swing.JFrame {
         jLabel69 = new javax.swing.JLabel();
         jLabel70 = new javax.swing.JLabel();
         jLabel71 = new javax.swing.JLabel();
-        jFormattedTextField4 = new javax.swing.JFormattedTextField(NumberFormat.getNumberInstance(new Locale("ID")));
         jComboBox7 = new javax.swing.JComboBox<>();
         jLabel75 = new javax.swing.JLabel();
         jComboBox8 = new javax.swing.JComboBox<>();
         jLabel76 = new javax.swing.JLabel();
         jTextField25 = new javax.swing.JTextField();
+        jTextField26 = new javax.swing.JTextField();
+        jLabel72 = new javax.swing.JLabel();
+        jTextField27 = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -1182,13 +1198,6 @@ public final class Pembelajaran extends javax.swing.JFrame {
 
         jLabel70.setText("<html>Nama Pembelajaran<font color=\"red\">*</font</html>");
 
-        jFormattedTextField4.setToolTipText("Nama Pembelajaran, otomatis terisi setelah pilih no pembelajaran siswa di atas.");
-        jFormattedTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jFormattedTextField4KeyPressed(evt);
-            }
-        });
-
         jComboBox7.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih No Pembelajaran Siswa" }));
         jComboBox7.setToolTipText("Pilih No Pembelajaran Siswa yang sudah tersedia.");
         jComboBox7.addActionListener(new java.awt.event.ActionListener() {
@@ -1201,11 +1210,37 @@ public final class Pembelajaran extends javax.swing.JFrame {
 
         jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih No Induk Siswa" }));
         jComboBox8.setToolTipText("Pilih No Induk Siswa");
+        jComboBox8.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox8ItemStateChanged(evt);
+            }
+        });
+        jComboBox8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox8ActionPerformed(evt);
+            }
+        });
 
         jTextField25.setToolTipText("Nama Siswa, otomatis terisi setelah pilih no induk siswa di atas.");
         jTextField25.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField25KeyPressed(evt);
+            }
+        });
+
+        jTextField26.setToolTipText("Nama Siswa, otomatis terisi setelah pilih no induk siswa di atas.");
+        jTextField26.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField26KeyPressed(evt);
+            }
+        });
+
+        jLabel72.setText("<html>Tanggal Pembelajaran<font color=\"red\">*</font</html>");
+
+        jTextField27.setToolTipText("Tanggal Pembelajaran Siswa, otomatis terisi, sesuai tanggal hari ini.");
+        jTextField27.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField27KeyPressed(evt);
             }
         });
 
@@ -1223,7 +1258,8 @@ public final class Pembelajaran extends javax.swing.JFrame {
                                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel67)
                                     .addComponent(jLabel70)
-                                    .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel72))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(43, 43, 43)
                         .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1233,7 +1269,9 @@ public final class Pembelajaran extends javax.swing.JFrame {
                             .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField25, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField27, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(242, 242, 242))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel76, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1262,11 +1300,15 @@ public final class Pembelajaran extends javax.swing.JFrame {
                 .addComponent(jLabel69, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel70, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel70, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel71, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(113, 113, 113))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel72, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(119, 119, 119))
         );
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -1279,7 +1321,7 @@ public final class Pembelajaran extends javax.swing.JFrame {
                         .addGap(19, 19, 19)
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGap(51, 51, 51)
                         .addComponent(jPanel32, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1289,8 +1331,8 @@ public final class Pembelajaran extends javax.swing.JFrame {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addComponent(jPanel32, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1749,6 +1791,16 @@ public final class Pembelajaran extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Pembelajaran.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } if (jTabbedPane1.getSelectedIndex() == 3) {
+            try {
+                tpaAzkaAiniya.kodePembelajaranTesting();
+                tpaAzkaAiniya.comboBoxNamaSiswa();
+                tpaAzkaAiniya.comboBoxNamaSiswaInputNilai();
+                tpaAzkaAiniya.comboBoxPembelajaranSiswaInputNilai();
+            } catch (SQLException ex) {
+                Logger.getLogger(Pembelajaran.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         } 
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
@@ -1910,6 +1962,7 @@ public final class Pembelajaran extends javax.swing.JFrame {
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
+        tpaAzkaAiniya.inputNilaiPembelajaranSiswaPanel();
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
@@ -1918,19 +1971,59 @@ public final class Pembelajaran extends javax.swing.JFrame {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         // TODO add your handling code here:
+        if (jTextField25.getText().isEmpty()) {
+            jLabel68.setText("<html><font color=\"red\">* Pilih no induk siswa dahulu</font</html>");
+        } else {
+            jLabel68.setText("");
+            if (jTextField26.getText().isEmpty()) {
+                jLabel71.setText("<html><font color=\"red\">* Pilih no pembelajaran siswa dahulu</font</html>");
+            } else {
+                jLabel71.setText("");
+                tpaAzkaAiniya.inputNilaiPembelajaranSiswa();
+            }
+        }
     }//GEN-LAST:event_jButton18ActionPerformed
 
-    private void jFormattedTextField4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField4KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jFormattedTextField4KeyPressed
-
     private void jComboBox7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox7ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.comboBoxPembelajaranSiswaInputNilai();
+        } catch (SQLException ex) {
+            Logger.getLogger(Pembelajaran.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jComboBox7ActionPerformed
 
     private void jTextField25KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField25KeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField25KeyPressed
+
+    private void jTextField26KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField26KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField26KeyPressed
+
+    private void jComboBox8ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox8ItemStateChanged
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.comboBoxPembelajaranSiswaInputNilai();
+        } catch (SQLException ex) {
+            Logger.getLogger(Pembelajaran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }//GEN-LAST:event_jComboBox8ItemStateChanged
+
+    private void jComboBox8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox8ActionPerformed
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.comboBoxPembelajaranSiswaInputNilai();
+        } catch (SQLException ex) {
+            Logger.getLogger(Pembelajaran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jComboBox8ActionPerformed
+
+    private void jTextField27KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField27KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField27KeyPressed
     
     /**
      * @param args the command line arguments
@@ -2505,7 +2598,6 @@ public final class Pembelajaran extends javax.swing.JFrame {
     public static javax.swing.JFormattedTextField jFormattedTextField1;
     public static javax.swing.JFormattedTextField jFormattedTextField2;
     public static javax.swing.JFormattedTextField jFormattedTextField3;
-    public static javax.swing.JFormattedTextField jFormattedTextField4;
     public static javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -2548,6 +2640,7 @@ public final class Pembelajaran extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel69;
     private javax.swing.JLabel jLabel70;
     private javax.swing.JLabel jLabel71;
+    private javax.swing.JLabel jLabel72;
     private javax.swing.JLabel jLabel75;
     private javax.swing.JLabel jLabel76;
     private javax.swing.JPanel jPanel1;
@@ -2597,6 +2690,8 @@ public final class Pembelajaran extends javax.swing.JFrame {
     public static javax.swing.JTextField jTextField21;
     public static javax.swing.JTextField jTextField22;
     public static javax.swing.JTextField jTextField25;
+    public static javax.swing.JTextField jTextField26;
+    public static javax.swing.JTextField jTextField27;
     // End of variables declaration//GEN-END:variables
 
     private void showDateAndTime() {
