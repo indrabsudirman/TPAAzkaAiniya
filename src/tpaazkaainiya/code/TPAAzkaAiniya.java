@@ -21,6 +21,7 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import static tpaazkaainiya.code.PasswordFieldToMD5.byteArrayToHexString;
 import static tpaazkaainiya.code.PasswordFieldToMD5.digest;
 import static tpaazkaainiya.code.PasswordFieldToMD5.getSalt;
@@ -43,6 +44,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,9 +55,11 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -213,9 +217,46 @@ public class TPAAzkaAiniya {
     String stringPath = null;
 
     ImageIcon icon = new ImageIcon("src/tpaazkaainiya/image/success_icon.png");
+    ImageIcon alhamdulillahIcon = new ImageIcon("src/tpaazkaainiya/image/alhamdulillah_icon.png");
+    ImageIcon afwanIcon = new ImageIcon("src/tpaazkaainiya/image/afwan_icon.png");
 
+    Font fontBold = new Font("Ubuntu", Font.BOLD, 13);
+    Font fontPlain = new Font("Ubuntu", Font.PLAIN, 12);
+    
     public static final int IMG_WIDTH = 354;
     public static final int IMG_HEIGHT = 472;
+
+    String[] nomor = new String[]{"Aspek Penilaian 1",
+        "Aspek Penilaian 2",
+        "Aspek Penilaian 3",
+        "Aspek Penilaian 4",
+        "Aspek Penilaian 5",
+        "Aspek Penilaian 6",
+        "Aspek Penilaian 7",
+        "Aspek Penilaian 8"};
+    Border loweredEtched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+
+    String[] aspekPenilaian = new String[]{"<html><b>Hafal huruf</b></html>",
+        "<html><b>Makhraj</b></html>",
+        "<html><b>Kelancaran membaca</b></html>",
+        "<html><b>Hafal huruf yang disambung</b></html>",
+        "<html><b>Menguasai bacaan kasron, kasroh panjang, dhommah dan dhommah panjang</b></html>",
+        "<html><b>Menguasai bacaan tanwin, huruf berharokat sukun dan qolqolah</b></html>",
+        "<html><b>Menguasai bacaan alif-lam qomariah, waqof, mad far’i, nun sukun/tanwin,<br> idzghom bighunah dan idzghom bilaghunah</b></html>",
+        "<html><b>Menguasai persoalan-persoalan Tajwid</b></html>"};
+
+    Font font = new Font("Helvetica-Normal", Font.PLAIN, 11);
+
+    JLabel nilai1 = new JLabel(aspekPenilaian[0]);
+    JLabel nilai2 = new JLabel(aspekPenilaian[1]);
+    JLabel nilai3 = new JLabel(aspekPenilaian[2]);
+    JLabel nilai4 = new JLabel(aspekPenilaian[3]);
+    JLabel nilai5 = new JLabel(aspekPenilaian[4]);
+    JLabel nilai6 = new JLabel(aspekPenilaian[5]);
+    JLabel nilai7 = new JLabel(aspekPenilaian[6]);
+    JLabel nilai8 = new JLabel(aspekPenilaian[7]);
+
+    JSpinner jSpinner1, jSpinner2, jSpinner3, jSpinner4, jSpinner5, jSpinner6, jSpinner7, jSpinner8;
 
     public static void main(String[] args) {
         new Login().setVisible(true);
@@ -1416,20 +1457,47 @@ public class TPAAzkaAiniya {
             String sqlQuery = "SELECT kodePembelajaran FROM `pembelajaran`";
             preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
             resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                kodePembelajaranDB = resultSet.getString("kodePembelajaran");
-                Pembelajaran.jComboBox3.addItem(kodePembelajaranDB);
+            
+            //Pilih Kode Pembelajaran
+            DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+            if (resultSet.next() == false) {
+                System.out.println("No kode pembelajaran available");
+                comboBoxModel.setSelectedItem("Pilih Kode Pembelajaran");
+                Pembelajaran.jComboBox3.setModel(comboBoxModel);
+                Pembelajaran.jTextField20.setText("");
+                Pembelajaran.jFormattedTextField3.setText("");
+                
+            } else {
+                do {
+                    kodePembelajaranDB = resultSet.getString("kodePembelajaran");
+                    comboBoxModel.addElement(kodePembelajaranDB);
+                    Pembelajaran.jComboBox3.setModel(comboBoxModel);
+                    
+                    Pembelajaran.jComboBox3.addActionListener((ActionEvent e) -> {
+                    JComboBox cd = (JComboBox)e.getSource();
+                    String pembelajaranKode1 = (String) cd.getSelectedItem();
+                    TPAAzkaAiniya.setPembelajaranKode(pembelajaranKode1);
+                    jTextFieldFromComboBox();
+                    Pembelajaran.jTextField20.setText(TPAAzkaAiniya.getPembelajaranNama());
+                    String tampilRupiah = numberFormat.format(new BigDecimal(TPAAzkaAiniya.getPembelajaranBiaya()));
+                    Pembelajaran.jFormattedTextField3.setText(tampilRupiah);
+                    });
+                } while (resultSet.next());
             }
-            Pembelajaran.jComboBox3.addItemListener((ItemEvent e) -> {
 
-                String pembelajaranKode1 = (String) Pembelajaran.jComboBox3.getSelectedItem();
-                TPAAzkaAiniya.setPembelajaranKode(pembelajaranKode1);
-                jTextFieldFromComboBox();
-                Pembelajaran.jTextField20.setText(TPAAzkaAiniya.getPembelajaranNama());
-                String tampilRupiah = numberFormat.format(new BigDecimal(TPAAzkaAiniya.getPembelajaranBiaya()));
-                Pembelajaran.jFormattedTextField3.setText(tampilRupiah);
-            });
+//            while (resultSet.next()) {
+//                kodePembelajaranDB = resultSet.getString("kodePembelajaran");
+//                Pembelajaran.jComboBox3.addItem(kodePembelajaranDB);
+//            }
+//            Pembelajaran.jComboBox3.addItemListener((ItemEvent e) -> {
+//
+//                String pembelajaranKode1 = (String) Pembelajaran.jComboBox3.getSelectedItem();
+//                TPAAzkaAiniya.setPembelajaranKode(pembelajaranKode1);
+//                jTextFieldFromComboBox();
+//                Pembelajaran.jTextField20.setText(TPAAzkaAiniya.getPembelajaranNama());
+//                String tampilRupiah = numberFormat.format(new BigDecimal(TPAAzkaAiniya.getPembelajaranBiaya()));
+//                Pembelajaran.jFormattedTextField3.setText(tampilRupiah);
+//            });
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1486,7 +1554,7 @@ public class TPAAzkaAiniya {
 
     public void namaSiswaFromCombo() {
         try {
-            connectionDatabase.connect();
+//            connectionDatabase.connect();
             String sqlQuery = "SELECT namaLengkap FROM `siswa` WHERE noInduk = ?";
             preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, TPAAzkaAiniya.getNoIndukSiswaFromCombo());
@@ -1630,7 +1698,7 @@ public class TPAAzkaAiniya {
 
     public void comboBoxPembelajaranSiswaInputNilai() throws SQLException {
         try {
-            connectionDatabase.connect();
+//            connectionDatabase.connect();
             String sqlQuery = "SELECT noPembelajaranSiswa FROM `pembelajaran_siswa` WHERE namaLengkap = ?";
             preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, TPAAzkaAiniya.getNamaSiswaFromCombo());
@@ -1640,7 +1708,7 @@ public class TPAAzkaAiniya {
 
             if (resultSet.next() == false) {
                 System.out.println("No data");
-                comboBoxModel.setSelectedItem("belum mengikuti pembelajaran");
+                comboBoxModel.setSelectedItem("Belum mengikuti pembelajaran");
                 Pembelajaran.jComboBox7.setModel(comboBoxModel);
                 Pembelajaran.jTextField26.setText("");
             } else {
@@ -1648,14 +1716,24 @@ public class TPAAzkaAiniya {
                     String noIndukSiswaCombo = resultSet.getString("noPembelajaranSiswa");
                     comboBoxModel.addElement(noIndukSiswaCombo);
                     Pembelajaran.jComboBox7.setModel(comboBoxModel);
-
-                    Pembelajaran.jComboBox7.addItemListener((ItemEvent e) -> {
-
-                        String kodePembelajaranSiswaCombo1 = (String) Pembelajaran.jComboBox7.getSelectedItem();
+                    
+                    Pembelajaran.jComboBox7.addActionListener((ActionEvent e) -> {
+                        JComboBox cd = (JComboBox)e.getSource();
+                        
+                        String kodePembelajaranSiswaCombo1 = (String) cd.getSelectedItem();
                         TPAAzkaAiniya.setKodePembelajaranSiswa(kodePembelajaranSiswaCombo1);
                         namaPembelajaranSiswaFromCombo();
                         Pembelajaran.jTextField26.setText(TPAAzkaAiniya.getNamaPembelajaranSiswa());
                     });
+
+                    
+//                        JComboBox cd = (JComboBox)e.getSource();
+//
+//                        String kodePembelajaranSiswaCombo1 = (String) cd.getSelectedItem();
+//                        TPAAzkaAiniya.setKodePembelajaranSiswa(kodePembelajaranSiswaCombo1);
+//                        namaPembelajaranSiswaFromCombo();
+//                        Pembelajaran.jTextField26.setText(TPAAzkaAiniya.getNamaPembelajaranSiswa());
+                    
 
                 } while (resultSet.next());
             }
@@ -1683,262 +1761,129 @@ public class TPAAzkaAiniya {
         }
     }
 
-    public void inputNilaiPembelajaranSiswa() {
-        JPanel panel = new JPanel();
+    public void inputNilaiPembelajaranSiswaIqra6() {
 
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Nilai Pembelajaran", TitledBorder.CENTER, TitledBorder.TOP));
-
-        DefaultTableModel model = new DefaultTableModel();
-
-        String[] columnNames = {"No",
-            "Aspek Pembelajaran",
-            "Nilai"};
-
-        Object[][] data = {
-            {"1", "Hafal huruf", 0},
-            {"2", "Makhraj", 0},
-            {"3", "Kelancaran membaca", 0},
-            {"4", "Hafal huruf yang disambung", 0},
-            {"5", "Menguasai bacaan kasron, kasroh panjang, dhommah dan dhommah panjang", 0},
-            {"6", "Menguasai bacaan tanwin, huruf berharokat sukun dan qolqolah", 0},
-            {"7", "Menguasai bacaan alif-lam qomariah, waqof, mad far’i, nun sukun/tanwin, idzghom bighunah dan idzghom bilaghunah", 0},
-            {"8", "Menguasai persoalan-persoalan Tajwid", 0}
-        };
-        model.addRow(data);
-//        while(resultSet.next()){
-//          String d = resultSet.getString("kodePembelajaran");
-//          String e = resultSet.getString("namaPembelajaran");
-//          model.addRow(new Object[]{d, e});
-//          }
-        table = new JTable(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-
-                if (col < 2) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
-
-        for (int i = 0; i < 2; i++) {
-            column = table.getColumnModel().getColumn(i);
-            if (i == 1) {
-                column.setPreferredWidth(300);
-            } else {
-                column.setPreferredWidth(50);
-            }
-        }
-
-        ((JLabel) table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer() {
-
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(
-                        table, value, isSelected, hasFocus, row, column);
-                setHorizontalAlignment(JLabel.CENTER);
-                return this;
-            }
-        };
-        table.getColumnModel().getColumn(0).setCellRenderer(centerRender);
-        table.getColumnModel().getColumn(1).setCellRenderer(centerRender);
-        table.getColumnModel().getColumn(1).setPreferredWidth(300); 
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRender);
-
-        panel.add(new JScrollPane(table));
-        String[] options = new String[]{"    OK    ", "Cancel"};
-        int option = JOptionPane.showOptionDialog(null, panel, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
-
-    }
-    
-    public void inputNilaiPembelajaranSiswaPanel() {
-        String [] nomor = new String[] {"Aspek Penilaian 1",
-            "Aspek Penilaian 2",
-            "Aspek Penilaian 3",
-            "Aspek Penilaian 4",
-            "Aspek Penilaian 5",
-            "Aspek Penilaian 6",
-            "Aspek Penilaian 7",
-            "Aspek Penilaian 8"};
-        Border loweredEtched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-        
-        String [] aspekPenilaian = new String[]                
-                {"<html><b>Hafal huruf</b></html>",        
-        "<html><b>Makhraj</b></html>",
-        "<html><b>Kelancaran membaca</b></html>",
-        "<html><b>Hafal huruf yang disambung</b></html>",
-        "<html><b>Menguasai bacaan kasron, kasroh panjang, dhommah dan dhommah panjang</b></html>",
-        "<html><b>Menguasai bacaan tanwin, huruf berharokat sukun dan qolqolah</b></html>",
-        "<html><b>Menguasai bacaan alif-lam qomariah, waqof, mad far’i, nun sukun/tanwin,<br> idzghom bighunah dan idzghom bilaghunah</b></html>",
-        "<html><b>Menguasai persoalan-persoalan Tajwid</b></html>"};
-        
-        SpinnerModel spinnerModel = null;
-        
-        Font font = new Font("Helvetica-Normal", Font.PLAIN, 11);
-        
-        JLabel nilai1 = new JLabel(aspekPenilaian[0]);
-        JLabel nilai2 = new JLabel(aspekPenilaian[1]);
-        JLabel nilai3 = new JLabel(aspekPenilaian[2]);
-        JLabel nilai4 = new JLabel(aspekPenilaian[3]);
-        JLabel nilai5 = new JLabel(aspekPenilaian[4]);
-        JLabel nilai6 = new JLabel(aspekPenilaian[5]);
-        JLabel nilai7 = new JLabel(aspekPenilaian[6]);
-        JLabel nilai8 = new JLabel(aspekPenilaian[7]);
-        
-        JTextField ketikNilai1 = new JTextField(5);
-        JTextField ketikNilai2 = new JTextField(5);
-        JTextField ketikNilai3 = new JTextField(5);
-        JTextField ketikNilai4 = new JTextField(5);
-        JTextField ketikNilai5 = new JTextField(5);
-        JTextField ketikNilai6 = new JTextField(5);
-        JTextField ketikNilai7 = new JTextField(7);
-        JTextField ketikNilai8 = new JTextField(5);
-        
-        JSpinner jSpinner1, jSpinner2, jSpinner3, jSpinner4, jSpinner5, jSpinner6, jSpinner7, jSpinner8;
-        
-//                = new JSpinner();
-//        JSpinner jSpinner2 = new JSpinner();
-//        JSpinner jSpinner3 = new JSpinner();
-//        JSpinner jSpinner4 = new JSpinner();
-//        JSpinner jSpinner5 = new JSpinner();
-//        JSpinner jSpinner6 = new JSpinner();
-//        JSpinner jSpinner7 = new JSpinner();
-//        JSpinner jSpinner8 = new JSpinner();
-        
-//        JButton cekNilai = new JButton("<html><FONT COLOR=GREEN> Cek Jawaban</FONT></html>");
-        
         TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
-//        Border borderSisiKosong = BorderFactory.createEmptyBorder(1,1,1,1);
-
-//        GridBagConstraints bagConstraints = new GridBagConstraints();
-//        bagConstraints.anchor = GridBagConstraints.LINE_END;
-        
-        
-        
         JPanel panelSoal1 = getPanel();
         panelSoal1.setBorder(titledBorder);
         panelSoal1.add(nilai1);
-        
 
-        JPanel panelNilai1 = new JPanel(new GridLayout(0,1));
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
         panelNilai1.setPreferredSize(new Dimension(100, 50));
         panelNilai1.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai1.setBorder(titledBorder);
         jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai1.add(jSpinner1);
-        
+
         JPanel panelSoal2 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal2.add(nilai2);
         panelSoal2.setBorder(titledBorder);
-        
-        JPanel panelNilai2 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
         panelNilai2.setPreferredSize(new Dimension(100, 50));
         panelNilai2.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai2.setBorder(titledBorder);
         jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai2.add(jSpinner2);
-        
+
         JPanel panelSoal3 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal3.add(nilai3);
         panelSoal3.setBorder(titledBorder);
-        
-        JPanel panelNilai3 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
         panelNilai3.setPreferredSize(new Dimension(100, 50));
         panelNilai3.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai3.setBorder(titledBorder);
         jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai3.add(jSpinner3);
-        
-        
+
         JPanel panelSoal4 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[3], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal4.add(nilai4);
         panelSoal4.setBorder(titledBorder);
-        
-        JPanel panelNilai4 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai4 = new JPanel(new GridLayout(0, 1));
         panelNilai4.setPreferredSize(new Dimension(100, 50));
         panelNilai4.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "4", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai4.setBorder(titledBorder);
         jSpinner4 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai4.add(jSpinner4);
-        
+
         JPanel panelSoal5 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[4], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal5.add(nilai5);
         panelSoal5.setBorder(titledBorder);
-        
-        JPanel panelNilai5 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai5 = new JPanel(new GridLayout(0, 1));
         panelNilai5.setPreferredSize(new Dimension(100, 50));
         panelNilai5.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "5", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai5.setBorder(titledBorder);
         jSpinner5 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai5.add(jSpinner5);
-        
+
         JPanel panelSoal6 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[5], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal6.add(nilai6);
         panelSoal6.setBorder(titledBorder);
-        
-        JPanel panelNilai6 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai6 = new JPanel(new GridLayout(0, 1));
         panelNilai6.setPreferredSize(new Dimension(100, 50));
         panelNilai6.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "6", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai6.setBorder(titledBorder);
         jSpinner6 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai6.add(jSpinner6);
-        
+
         JPanel panelSoal7 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[6], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal7.add(nilai7);
         panelSoal7.setBorder(titledBorder);
-        
+
         JPanel panelNilai7 = new JPanel();
         jSpinner7 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         Component jSpinner7Editor = jSpinner7.getEditor();
         JFormattedTextField jFTF = ((JSpinner.DefaultEditor) jSpinner7Editor).getTextField();
-        jFTF.setColumns(5); 
+        jFTF.setColumns(5);
         panelNilai7.setPreferredSize(new Dimension(100, 63));
         panelNilai7.setMaximumSize(new Dimension(100, 63));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "7", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai7.setBorder(titledBorder);
         panelNilai7.add(jSpinner7);
-        
+
         JPanel panelSoal8 = getPanel();
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[7], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelSoal8.add(nilai8);
         panelSoal8.setBorder(titledBorder);
-        
-        JPanel panelNilai8 = new JPanel(new GridLayout(0,1));
+
+        JPanel panelNilai8 = new JPanel(new GridLayout(0, 1));
         panelNilai8.setPreferredSize(new Dimension(100, 50));
         panelNilai8.setMaximumSize(new Dimension(100, 50));
         titledBorder = BorderFactory.createTitledBorder(loweredEtched, "8", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
         panelNilai8.setBorder(titledBorder);
         jSpinner8 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         panelNilai8.add(jSpinner8);
-        
+
         JPanel panelSemuaSoal = new JPanel();
         panelSemuaSoal.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,0,0,0);  //top padding
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
         c.gridx = 0;
         c.gridy = 0;
         panelSemuaSoal.add(panelSoal1, c);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,0,0,0);  //top padding
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
         c.weightx = 1;
         c.gridx = 1;
         c.gridy = 0;
-        panelSemuaSoal.add(panelNilai1,c);
+        panelSemuaSoal.add(panelNilai1, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridx = 0;
@@ -1978,7 +1923,7 @@ public class TPAAzkaAiniya {
         c.weightx = 1;
         c.gridx = 1;
         c.gridy = 4;
-        panelSemuaSoal.add(panelNilai5,c);
+        panelSemuaSoal.add(panelNilai5, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridx = 0;
@@ -1988,7 +1933,7 @@ public class TPAAzkaAiniya {
         c.weightx = 1;
         c.gridx = 1;
         c.gridy = 5;
-        panelSemuaSoal.add(panelNilai6,c);
+        panelSemuaSoal.add(panelNilai6, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridx = 0;
@@ -2009,21 +1954,1751 @@ public class TPAAzkaAiniya {
         c.gridx = 1;
         c.gridy = 7;
         panelSemuaSoal.add(panelNilai8, c);
-        
+
         JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
         JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-        ((Frame)dialog.getParent()).setIconImage(((ImageIcon)icon).getImage());  
-        
+        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
         String[] options = new String[]{"Simpan", "Cancel"};
-        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7, aspekNilai8; //Tambah
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            aspekNilai4 = (Integer) jSpinner4.getValue();
+            aspekNilai5 = (Integer) jSpinner5.getValue();
+            aspekNilai6 = (Integer) jSpinner6.getValue(); //Ganti
+            aspekNilai7 = (Integer) jSpinner7.getValue();
+            aspekNilai8 = (Integer) jSpinner8.getValue();
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3 + aspekNilai4 + aspekNilai5 + aspekNilai6 + aspekNilai7 + aspekNilai8); //Tambah
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7, aspekNilai8}; //Tambah
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelInformasiRataNilaiUcapan = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+                nilai7.setFont(fontPlain);
+                nilai8.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)),
+                    new JLabel(String.valueOf("= " + aspekNilai2)),
+                    new JLabel(String.valueOf("= " + aspekNilai3)),
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6)),
+                    new JLabel(String.valueOf("= " + aspekNilai7)),
+                    new JLabel(String.valueOf("= " + aspekNilai8))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelSoal7.add(jLabelNilai[6]);
+                panelSoal8.add(jLabelNilai[7]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 9;
+                panelInformasiNilai.add(panelSoal7, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 10;
+                panelInformasiNilai.add(panelSoal8, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+                nilai7.setFont(fontPlain);
+                nilai8.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), 
+                    new JLabel(String.valueOf("= " + aspekNilai2)), 
+                    new JLabel(String.valueOf("= " + aspekNilai3)), 
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6)),
+                    new JLabel(String.valueOf("= " + aspekNilai7)),
+                    new JLabel(String.valueOf("= " + aspekNilai8))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelSoal7.add(jLabelNilai[6]);
+                panelSoal8.add(jLabelNilai[7]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 9;
+                panelInformasiNilai.add(panelSoal7, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 10;
+                panelInformasiNilai.add(panelSoal8, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
         }
     }
+
+    public void inputNilaiPembelajaranSiswaIqra5() {
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        JPanel panelSoal1 = getPanel();
+        panelSoal1.setBorder(titledBorder);
+        panelSoal1.add(nilai1);
+
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
+        panelNilai1.setPreferredSize(new Dimension(100, 50));
+        panelNilai1.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai1.setBorder(titledBorder);
+        jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai1.add(jSpinner1);
+
+        JPanel panelSoal2 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal2.add(nilai2);
+        panelSoal2.setBorder(titledBorder);
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
+        panelNilai2.setPreferredSize(new Dimension(100, 50));
+        panelNilai2.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai2.setBorder(titledBorder);
+        jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai2.add(jSpinner2);
+
+        JPanel panelSoal3 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal3.add(nilai3);
+        panelSoal3.setBorder(titledBorder);
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
+        panelNilai3.setPreferredSize(new Dimension(100, 50));
+        panelNilai3.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai3.setBorder(titledBorder);
+        jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai3.add(jSpinner3);
+
+        JPanel panelSoal4 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[3], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal4.add(nilai4);
+        panelSoal4.setBorder(titledBorder);
+
+        JPanel panelNilai4 = new JPanel(new GridLayout(0, 1));
+        panelNilai4.setPreferredSize(new Dimension(100, 50));
+        panelNilai4.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "4", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai4.setBorder(titledBorder);
+        jSpinner4 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai4.add(jSpinner4);
+
+        JPanel panelSoal5 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[4], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal5.add(nilai5);
+        panelSoal5.setBorder(titledBorder);
+
+        JPanel panelNilai5 = new JPanel(new GridLayout(0, 1));
+        panelNilai5.setPreferredSize(new Dimension(100, 50));
+        panelNilai5.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "5", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai5.setBorder(titledBorder);
+        jSpinner5 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai5.add(jSpinner5);
+
+        JPanel panelSoal6 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[5], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal6.add(nilai6);
+        panelSoal6.setBorder(titledBorder);
+
+        JPanel panelNilai6 = new JPanel(new GridLayout(0, 1));
+        panelNilai6.setPreferredSize(new Dimension(100, 50));
+        panelNilai6.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "6", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai6.setBorder(titledBorder);
+        jSpinner6 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai6.add(jSpinner6);
+
+        JPanel panelSoal7 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[6], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal7.add(nilai7);
+        panelSoal7.setBorder(titledBorder);
+
+        JPanel panelNilai7 = new JPanel();
+        jSpinner7 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        Component jSpinner7Editor = jSpinner7.getEditor();
+        JFormattedTextField jFTF = ((JSpinner.DefaultEditor) jSpinner7Editor).getTextField();
+        jFTF.setColumns(5);
+        panelNilai7.setPreferredSize(new Dimension(100, 63));
+        panelNilai7.setMaximumSize(new Dimension(100, 63));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "7", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai7.setBorder(titledBorder);
+        panelNilai7.add(jSpinner7);
+
+        JPanel panelSemuaSoal = new JPanel();
+        panelSemuaSoal.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelSoal1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelNilai1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelSoal2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelNilai2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelSoal3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelNilai3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelSoal4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelNilai4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelSoal5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelNilai5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 5;
+        panelSemuaSoal.add(panelSoal6, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 5;
+        panelSemuaSoal.add(panelNilai6, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 6;
+        panelSemuaSoal.add(panelSoal7, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 6;
+        panelSemuaSoal.add(panelNilai7, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
+        String[] options = new String[]{"Simpan", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7; //Tambah
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            aspekNilai4 = (Integer) jSpinner4.getValue();
+            aspekNilai5 = (Integer) jSpinner5.getValue();
+            aspekNilai6 = (Integer) jSpinner6.getValue(); //Ganti
+            aspekNilai7 = (Integer) jSpinner7.getValue();
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3 + aspekNilai4 + aspekNilai5 + aspekNilai6 + aspekNilai7); //Tambah
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7}; //Tambah
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelInformasiRataNilaiUcapan = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+                nilai7.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)),
+                    new JLabel(String.valueOf("= " + aspekNilai2)),
+                    new JLabel(String.valueOf("= " + aspekNilai3)),
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6)),
+                    new JLabel(String.valueOf("= " + aspekNilai7))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelSoal7.add(jLabelNilai[6]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 9;
+                panelInformasiNilai.add(panelSoal7, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+                nilai7.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), 
+                    new JLabel(String.valueOf("= " + aspekNilai2)), 
+                    new JLabel(String.valueOf("= " + aspekNilai3)), 
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6)),
+                    new JLabel(String.valueOf("= " + aspekNilai7))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelSoal7.add(jLabelNilai[6]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 9;
+                panelInformasiNilai.add(panelSoal7, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+    }
+
+    public void inputNilaiPembelajaranSiswaIqra4() {
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        JPanel panelSoal1 = getPanel();
+        panelSoal1.setBorder(titledBorder);
+        panelSoal1.add(nilai1);
+
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
+        panelNilai1.setPreferredSize(new Dimension(100, 50));
+        panelNilai1.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai1.setBorder(titledBorder);
+        jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai1.add(jSpinner1);
+
+        JPanel panelSoal2 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal2.add(nilai2);
+        panelSoal2.setBorder(titledBorder);
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
+        panelNilai2.setPreferredSize(new Dimension(100, 50));
+        panelNilai2.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai2.setBorder(titledBorder);
+        jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai2.add(jSpinner2);
+
+        JPanel panelSoal3 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal3.add(nilai3);
+        panelSoal3.setBorder(titledBorder);
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
+        panelNilai3.setPreferredSize(new Dimension(100, 50));
+        panelNilai3.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai3.setBorder(titledBorder);
+        jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai3.add(jSpinner3);
+
+        JPanel panelSoal4 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[3], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal4.add(nilai4);
+        panelSoal4.setBorder(titledBorder);
+
+        JPanel panelNilai4 = new JPanel(new GridLayout(0, 1));
+        panelNilai4.setPreferredSize(new Dimension(100, 50));
+        panelNilai4.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "4", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai4.setBorder(titledBorder);
+        jSpinner4 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai4.add(jSpinner4);
+
+        JPanel panelSoal5 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[4], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal5.add(nilai5);
+        panelSoal5.setBorder(titledBorder);
+
+        JPanel panelNilai5 = new JPanel(new GridLayout(0, 1));
+        panelNilai5.setPreferredSize(new Dimension(100, 50));
+        panelNilai5.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "5", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai5.setBorder(titledBorder);
+        jSpinner5 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai5.add(jSpinner5);
+
+        JPanel panelSoal6 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[5], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal6.add(nilai6);
+        panelSoal6.setBorder(titledBorder);
+
+        JPanel panelNilai6 = new JPanel(new GridLayout(0, 1));
+        panelNilai6.setPreferredSize(new Dimension(100, 50));
+        panelNilai6.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "6", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai6.setBorder(titledBorder);
+        jSpinner6 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai6.add(jSpinner6);
+
+        JPanel panelSemuaSoal = new JPanel();
+        panelSemuaSoal.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelSoal1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelNilai1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelSoal2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelNilai2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelSoal3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelNilai3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelSoal4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelNilai4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelSoal5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelNilai5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 5;
+        panelSemuaSoal.add(panelSoal6, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 5;
+        panelSemuaSoal.add(panelNilai6, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
+        String[] options = new String[]{"Simpan", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6; //Tambah
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            aspekNilai4 = (Integer) jSpinner4.getValue();
+            aspekNilai5 = (Integer) jSpinner5.getValue();
+            aspekNilai6 = (Integer) jSpinner6.getValue(); //Ganti
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3 + aspekNilai4 + aspekNilai5 + aspekNilai6); //Tambah
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6}; //Tambah
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelInformasiRataNilaiUcapan = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)),
+                    new JLabel(String.valueOf("= " + aspekNilai2)),
+                    new JLabel(String.valueOf("= " + aspekNilai3)),
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+                nilai6.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), 
+                    new JLabel(String.valueOf("= " + aspekNilai2)), 
+                    new JLabel(String.valueOf("= " + aspekNilai3)), 
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5)),
+                    new JLabel(String.valueOf("= " + aspekNilai6))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelSoal6.add(jLabelNilai[5]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 8;
+                panelInformasiNilai.add(panelSoal6, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+    }
+
+    public void inputNilaiPembelajaranSiswaIqra3() {
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        JPanel panelSoal1 = getPanel();
+        panelSoal1.setBorder(titledBorder);
+        panelSoal1.add(nilai1);
+
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
+        panelNilai1.setPreferredSize(new Dimension(100, 50));
+        panelNilai1.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai1.setBorder(titledBorder);
+        jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai1.add(jSpinner1);
+
+        JPanel panelSoal2 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal2.add(nilai2);
+        panelSoal2.setBorder(titledBorder);
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
+        panelNilai2.setPreferredSize(new Dimension(100, 50));
+        panelNilai2.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai2.setBorder(titledBorder);
+        jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai2.add(jSpinner2);
+
+        JPanel panelSoal3 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal3.add(nilai3);
+        panelSoal3.setBorder(titledBorder);
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
+        panelNilai3.setPreferredSize(new Dimension(100, 50));
+        panelNilai3.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai3.setBorder(titledBorder);
+        jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai3.add(jSpinner3);
+
+        JPanel panelSoal4 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[3], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal4.add(nilai4);
+        panelSoal4.setBorder(titledBorder);
+
+        JPanel panelNilai4 = new JPanel(new GridLayout(0, 1));
+        panelNilai4.setPreferredSize(new Dimension(100, 50));
+        panelNilai4.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "4", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai4.setBorder(titledBorder);
+        jSpinner4 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai4.add(jSpinner4);
+
+        JPanel panelSoal5 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[4], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal5.add(nilai5);
+        panelSoal5.setBorder(titledBorder);
+
+        JPanel panelNilai5 = new JPanel(new GridLayout(0, 1));
+        panelNilai5.setPreferredSize(new Dimension(100, 50));
+        panelNilai5.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "5", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai5.setBorder(titledBorder);
+        jSpinner5 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai5.add(jSpinner5);
+
+        JPanel panelSemuaSoal = new JPanel();
+        panelSemuaSoal.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelSoal1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelNilai1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelSoal2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelNilai2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelSoal3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelNilai3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelSoal4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelNilai4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelSoal5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 4;
+        panelSemuaSoal.add(panelNilai5, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
+        String[] options = new String[]{"Simpan", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5;
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            aspekNilai4 = (Integer) jSpinner4.getValue();
+            aspekNilai5 = (Integer) jSpinner5.getValue();
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3 + aspekNilai4 + aspekNilai5);
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5};
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelInformasiRataNilaiUcapan = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)),
+                    new JLabel(String.valueOf("= " + aspekNilai2)),
+                    new JLabel(String.valueOf("= " + aspekNilai3)),
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+                nilai5.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), 
+                    new JLabel(String.valueOf("= " + aspekNilai2)), 
+                    new JLabel(String.valueOf("= " + aspekNilai3)), 
+                    new JLabel(String.valueOf("= " + aspekNilai4)),
+                    new JLabel(String.valueOf("= " + aspekNilai5))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelSoal5.add(jLabelNilai[4]);
+                panelInformasiRataNilaiUcapan.add(jLabel1[0]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(panelInformasiRataNilaiUcapan, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 7;
+                panelInformasiNilai.add(panelSoal5, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+    }
+
+    public void inputNilaiPembelajaranSiswaIqra2() {
+        
+        nilai1.setFont(fontPlain);
+        nilai2.setFont(fontPlain);
+        nilai3.setFont(fontPlain);
+        nilai4.setFont(fontPlain);
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        JPanel panelSoal1 = getPanel();
+        panelSoal1.setBorder(titledBorder);
+        panelSoal1.add(nilai1);
+
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
+        panelNilai1.setPreferredSize(new Dimension(100, 50));
+        panelNilai1.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai1.setBorder(titledBorder);
+        jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai1.add(jSpinner1);
+
+        JPanel panelSoal2 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal2.add(nilai2);
+        panelSoal2.setBorder(titledBorder);
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
+        panelNilai2.setPreferredSize(new Dimension(100, 50));
+        panelNilai2.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai2.setBorder(titledBorder);
+        jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai2.add(jSpinner2);
+
+        JPanel panelSoal3 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal3.add(nilai3);
+        panelSoal3.setBorder(titledBorder);
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
+        panelNilai3.setPreferredSize(new Dimension(100, 50));
+        panelNilai3.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai3.setBorder(titledBorder);
+        jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai3.add(jSpinner3);
+
+        JPanel panelSoal4 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[3], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal4.add(nilai4);
+        panelSoal4.setBorder(titledBorder);
+
+        JPanel panelNilai4 = new JPanel(new GridLayout(0, 1));
+        panelNilai4.setPreferredSize(new Dimension(100, 50));
+        panelNilai4.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "4", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai4.setBorder(titledBorder);
+        jSpinner4 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai4.add(jSpinner4);
+
+        JPanel panelSemuaSoal = new JPanel();
+        panelSemuaSoal.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelSoal1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelNilai1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelSoal2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelNilai2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelSoal3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelNilai3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelSoal4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 3;
+        panelSemuaSoal.add(panelNilai4, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
+        String[] options = new String[]{"Simpan", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4;
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            aspekNilai4 = (Integer) jSpinner4.getValue();
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3 + aspekNilai4);
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4};
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), new JLabel(String.valueOf("= " + aspekNilai2)), new JLabel(String.valueOf("= " + aspekNilai3)), new JLabel(String.valueOf("= " + aspekNilai4))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(jLabel1[0], c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+                
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+                nilai4.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), new JLabel(String.valueOf("= " + aspekNilai2)), new JLabel(String.valueOf("= " + aspekNilai3)), new JLabel(String.valueOf("= " + aspekNilai4))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelSoal4.add(jLabelNilai[3]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(jLabel1[0], c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 6;
+                panelInformasiNilai.add(panelSoal4, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+    }
+
+    public void inputNilaiPembelajaranSiswaIqra1() {
+
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[0], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        JPanel panelSoal1 = getPanel();
+        panelSoal1.setBorder(titledBorder);
+        panelSoal1.add(nilai1);
+
+        JPanel panelNilai1 = new JPanel(new GridLayout(0, 1));
+        panelNilai1.setPreferredSize(new Dimension(100, 50));
+        panelNilai1.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "1", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai1.setBorder(titledBorder);
+        jSpinner1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai1.add(jSpinner1);
+
+        JPanel panelSoal2 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[1], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal2.add(nilai2);
+        panelSoal2.setBorder(titledBorder);
+
+        JPanel panelNilai2 = new JPanel(new GridLayout(0, 1));
+        panelNilai2.setPreferredSize(new Dimension(100, 50));
+        panelNilai2.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "2", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai2.setBorder(titledBorder);
+        jSpinner2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai2.add(jSpinner2);
+
+        JPanel panelSoal3 = getPanel();
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, nomor[2], TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelSoal3.add(nilai3);
+        panelSoal3.setBorder(titledBorder);
+
+        JPanel panelNilai3 = new JPanel(new GridLayout(0, 1));
+        panelNilai3.setPreferredSize(new Dimension(100, 50));
+        panelNilai3.setMaximumSize(new Dimension(100, 50));
+        titledBorder = BorderFactory.createTitledBorder(loweredEtched, "3", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER, font);
+        panelNilai3.setBorder(titledBorder);
+        jSpinner3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        panelNilai3.add(jSpinner3);
+
+        JPanel panelSemuaSoal = new JPanel();
+        panelSemuaSoal.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.gridx = 0;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelSoal1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);  //top padding
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        panelSemuaSoal.add(panelNilai1, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelSoal2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        panelSemuaSoal.add(panelNilai2, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelSoal3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        panelSemuaSoal.add(panelNilai3, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+
+        String[] options = new String[]{"Simpan", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            System.out.println("Anda tekan simpan!");
+            int aspekNilai1, aspekNilai2, aspekNilai3;
+            aspekNilai1 = (Integer) jSpinner1.getValue();
+            aspekNilai2 = (Integer) jSpinner2.getValue();
+            aspekNilai3 = (Integer) jSpinner3.getValue();
+            System.out.println("Nilai " + aspekNilai1 + aspekNilai2 + aspekNilai3);
+            int nilaiRataRata[] = {aspekNilai1, aspekNilai2, aspekNilai3};
+            double nilaiRataDecimal = 0;
+            for (int i = 0; i < nilaiRataRata.length; i++) {
+                nilaiRataDecimal += Double.valueOf(nilaiRataRata[i]);
+            }
+            DecimalFormat df = new DecimalFormat("####0.00");
+            double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            double standarNilaiLulus = 80;
+
+            JPanel panelInformasiNilai = getPanel();
+            JPanel panelInformasiRataNilai = getPanel();
+            JPanel panelIconNilai = getPanel();
+            JLabel labelIcon = new JLabel();
+
+            Font fontBold = new Font("Ubuntu", Font.BOLD, 13);
+            Font fontPlain = new Font("Ubuntu", Font.PLAIN, 12);
+
+            if (nilaiRataFinal >= standarNilaiLulus) {
+                JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                String catatanPembelajaran = "Lanjut";
+
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), new JLabel(String.valueOf("= " + aspekNilai2)), new JLabel(String.valueOf("= " + aspekNilai3))};
+
+                labelIcon.setIcon(alhamdulillahIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(jLabel1[0], c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+
+                try {
+                    Date date = new Date();
+                    String sqlQuery = "UPDATE pembelajaran_siswa SET halamanPembelajaran = ?, nilaiPembelajaran = ?, catatanPembelajaran = ?, tanggalPembelajaran = ?, userMadeNilaiSiswa = ? WHERE noPembelajaranSiswa = ?";
+                    connectionDatabase.connect();
+                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
+                    preparedStatement.setString(1, Pembelajaran.jSpinner1.getValue().toString());
+                    String nilaiPembelajaranToDB;
+                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
+                    preparedStatement.setString(2, nilaiPembelajaranToDB);
+                    preparedStatement.setString(3, catatanPembelajaran);
+                    preparedStatement.setTimestamp(4, new java.sql.Timestamp(date.getTime()));
+                    preparedStatement.setString(5, Pembelajaran.jLabel1.getText());
+                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem());
+                    preparedStatement.executeUpdate();
+                    
+                }catch(SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
+                jLabel1[1].setFont(fontBold);
+                nilai1.setFont(fontPlain);
+                nilai2.setFont(fontPlain);
+                nilai3.setFont(fontPlain);
+
+                JLabel[] jLabelNilai = {new JLabel(String.valueOf("= " + aspekNilai1)), new JLabel(String.valueOf("= " + aspekNilai2)), new JLabel(String.valueOf("= " + aspekNilai3))};
+
+                labelIcon.setIcon(afwanIcon);
+                panelSoal1.add(jLabelNilai[0]);
+                panelSoal2.add(jLabelNilai[1]);
+                panelSoal3.add(jLabelNilai[2]);
+                panelInformasiRataNilai.add(jLabel1[1]);
+                panelIconNilai.add(labelIcon);
+
+                panelInformasiNilai.setLayout(new GridBagLayout());
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 0;
+                panelInformasiNilai.add(panelIconNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 1;
+                panelInformasiNilai.add(jLabel1[0], c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 2;
+                panelInformasiNilai.add(panelInformasiRataNilai, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(20, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 3;
+                panelInformasiNilai.add(panelSoal1, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 4;
+                panelInformasiNilai.add(panelSoal2, c2);
+                c2.fill = GridBagConstraints.HORIZONTAL;
+                c2.insets = new Insets(10, 0, 0, 0);  //top padding
+                c2.gridx = 0;
+                c2.gridy = 5;
+                panelInformasiNilai.add(panelSoal3, c2);
+
+                JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
+
+            }
+        }
+
+    }
+
     private JPanel getPanel() {
         JPanel result = new JPanel();
-
-
 
         return result;
     }
