@@ -3623,7 +3623,7 @@ public class TPAAzkaAiniya {
 
                 try {
                     Date date = new Date();
-                    String sqlQuery = "UPDATE pembelajaran_siswa SET halamanPembelajaran = ?, nilaiPembelajaran = ?, catatanPembelajaran = ?, tanggalPembelajaran = ?, userMadeNilaiSiswa = ? WHERE noPembelajaranSiswa = ?";
+                    String sqlQuery = "INSERT INTO pembelajaran_siswa (halamanPembelajaran = ?, nilaiPembelajaran = ?, catatanPembelajaran = ?, tanggalPembelajaran = ?, userMadeNilaiSiswa = ? WHERE noPembelajaranSiswa = ?";
                     connectionDatabase.connect();
                     preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
                     preparedStatement.setString(1, Pembelajaran.jSpinner1.getValue().toString());
