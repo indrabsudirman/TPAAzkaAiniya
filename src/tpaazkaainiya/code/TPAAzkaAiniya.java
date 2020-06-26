@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1571,7 +1572,8 @@ public class TPAAzkaAiniya {
     public void savePembelajaranSiswa() {
         try {
 
-            String sqlQuery = ("INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, biayaPembelajaran, userMadePembelajaranSiswa) values (?, ?, ?, ?, ?, ?, ?)");
+            Date date = new Date();
+            String sqlQuery = ("INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, biayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran) values (?, ?, ?, ?, ?, ?, ?, ?)");
             connectionDatabase.connect();
             preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
             preparedStatement.setString(1, Pembelajaran.jComboBox5.getSelectedItem().toString() + " " + Pembelajaran.jTextField22.getText());
@@ -1581,6 +1583,7 @@ public class TPAAzkaAiniya {
             preparedStatement.setString(5, Pembelajaran.jTextField20.getText());
             preparedStatement.setObject(6, TPAAzkaAiniya.getPembelajaranBiaya());
             preparedStatement.setString(7, Pembelajaran.jLabel1.getText());
+            preparedStatement.setTimestamp(8, new java.sql.Timestamp(date.getTime()));
             preparedStatement.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Yeah, data berhasil disimpan ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
@@ -1955,9 +1958,9 @@ public class TPAAzkaAiniya {
         c.gridy = 7;
         panelSemuaSoal.add(panelNilai8, c);
 
-        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
+//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
+//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
+//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
@@ -3572,8 +3575,7 @@ public class TPAAzkaAiniya {
 
             if (nilaiRataFinal >= standarNilaiLulus) {
                 JLabel[] jLabel1 = {new JLabel("Alhamdulillah kamu lanjut ke halaman berikutnya, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
-                String catatanPembelajaran = "Lanjut";
-
+                
                 jLabel1[1].setFont(fontBold);
                 nilai1.setFont(fontPlain);
                 nilai2.setFont(fontPlain);
@@ -3621,27 +3623,11 @@ public class TPAAzkaAiniya {
                 c2.gridy = 5;
                 panelInformasiNilai.add(panelSoal3, c2);
 
-                try {
-                    Date date = new Date();
-                    String sqlQuery = "INSERT INTO pembelajaran_siswa (halamanPembelajaran = ?, nilaiPembelajaran = ?, catatanPembelajaran = ?, tanggalPembelajaran = ?, userMadeNilaiSiswa = ? WHERE noPembelajaranSiswa = ?";
-                    connectionDatabase.connect();
-                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
-                    preparedStatement.setString(1, Pembelajaran.jSpinner1.getValue().toString());
-                    String nilaiPembelajaranToDB;
-                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
-                    preparedStatement.setString(2, nilaiPembelajaranToDB);
-                    preparedStatement.setString(3, catatanPembelajaran);
-                    preparedStatement.setTimestamp(4, new java.sql.Timestamp(date.getTime()));
-                    preparedStatement.setString(5, Pembelajaran.jLabel1.getText());
-                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem());
-                    preparedStatement.executeUpdate();
-                    
-                }catch(SQLException e) {
-                    JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                simpanNilaiLanjut();
                 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
             } else {
+                
                 JLabel[] jLabel1 = {new JLabel("Maaf kamu masih harus mengulang lagi, "), new JLabel("nilai rata-rata kamu : " + df.format(nilaiRataFinal))};
                 jLabel1[1].setFont(fontBold);
                 nilai1.setFont(fontPlain);
@@ -3689,6 +3675,9 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 5;
                 panelInformasiNilai.add(panelSoal3, c2);
+                
+                simpanNilaiMengulang();
+                
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
@@ -3701,5 +3690,117 @@ public class TPAAzkaAiniya {
         JPanel result = new JPanel();
 
         return result;
+    }
+    
+    private void simpanNilaiLanjut() {
+        String catatanPembelajaran = "Lanjut";
+                try {                  
+                    //Ambil data didatabase dulu
+                    
+                    java.sql.Timestamp timestamp;
+                    String sqlQuery = "SELECT noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran FROM pembelajaran_siswa WHERE noPembelajaranSiswa = ?";
+                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
+                    preparedStatement.setString(1, (String) Pembelajaran.jComboBox7.getSelectedItem());
+                    resultSet = preparedStatement.executeQuery();
+                    
+
+                    if (resultSet.next()) {
+                        
+                        resultSet.getString("noPembelajaranSiswa");
+                        resultSet.getString("noInduk");
+                        resultSet.getString("namaLengkap");
+                        resultSet.getString("kodePembelajaran");
+                        resultSet.getString("namaPembelajaran");
+                        resultSet.getString("BiayaPembelajaran");
+                        resultSet.getString("userMadePembelajaranSiswa");
+                        
+                    } 
+                    timestamp = resultSet.getTimestamp("tanggalDaftarPembelajaran");
+                    Date date1 = new java.util.Date(timestamp.getTime());
+                    Date date = new Date();
+                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, halamanPembelajaran, nilaiPembelajaran, catatanPembelajaran, tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//                    connectionDatabase.connect();
+                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery1);
+                    preparedStatement.setString(1, resultSet.getString("noPembelajaranSiswa"));
+                    preparedStatement.setString(2, resultSet.getString("noInduk"));
+                    preparedStatement.setString(3, resultSet.getString("namaLengkap"));
+                    preparedStatement.setString(4, resultSet.getString("kodePembelajaran"));
+                    preparedStatement.setString(5, resultSet.getString("namaPembelajaran"));
+                    
+                    
+                    preparedStatement.setString(6, Pembelajaran.jSpinner1.getValue().toString()); //halaman
+                    String nilaiPembelajaranToDB;
+                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
+                    preparedStatement.setString(7, nilaiPembelajaranToDB); //nilai pembelajaran
+                    preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
+                    preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
+                    preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
+                    
+                    preparedStatement.setString(11, resultSet.getString("BiayaPembelajaran"));
+                    preparedStatement.setString(12, resultSet.getString("userMadePembelajaranSiswa"));
+                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
+                    
+//                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem()); //pembelajaran 
+                    preparedStatement.executeUpdate();
+                    
+                }catch(SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Error gagal simpan nilai " + e, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+    }
+    
+    private void simpanNilaiMengulang() {
+        String catatanPembelajaran = "Mengulang";
+                try {                  
+                    //Ambil data didatabase dulu
+                    
+                    java.sql.Timestamp timestamp;
+                    String sqlQuery = "SELECT noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran FROM pembelajaran_siswa WHERE noPembelajaranSiswa = ?";
+                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
+                    preparedStatement.setString(1, (String) Pembelajaran.jComboBox7.getSelectedItem());
+                    resultSet = preparedStatement.executeQuery();
+                    
+
+                    if (resultSet.next()) {
+                        
+                        resultSet.getString("noPembelajaranSiswa");
+                        resultSet.getString("noInduk");
+                        resultSet.getString("namaLengkap");
+                        resultSet.getString("kodePembelajaran");
+                        resultSet.getString("namaPembelajaran");
+                        resultSet.getString("BiayaPembelajaran");
+                        resultSet.getString("userMadePembelajaranSiswa");
+                        
+                    } 
+                    timestamp = resultSet.getTimestamp("tanggalDaftarPembelajaran");
+                    Date date1 = new java.util.Date(timestamp.getTime());
+                    Date date = new Date();
+                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, halamanPembelajaran, nilaiPembelajaran, catatanPembelajaran, tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//                    connectionDatabase.connect();
+                    preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery1);
+                    preparedStatement.setString(1, resultSet.getString("noPembelajaranSiswa"));
+                    preparedStatement.setString(2, resultSet.getString("noInduk"));
+                    preparedStatement.setString(3, resultSet.getString("namaLengkap"));
+                    preparedStatement.setString(4, resultSet.getString("kodePembelajaran"));
+                    preparedStatement.setString(5, resultSet.getString("namaPembelajaran"));
+                    
+                    
+                    preparedStatement.setString(6, Pembelajaran.jSpinner1.getValue().toString()); //halaman
+                    String nilaiPembelajaranToDB;
+                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
+                    preparedStatement.setString(7, nilaiPembelajaranToDB); //nilai pembelajaran
+                    preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
+                    preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
+                    preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
+                    
+                    preparedStatement.setString(11, resultSet.getString("BiayaPembelajaran"));
+                    preparedStatement.setString(12, resultSet.getString("userMadePembelajaranSiswa"));
+                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
+                    
+//                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem()); //pembelajaran 
+                    preparedStatement.executeUpdate();
+                    
+                }catch(SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Error gagal simpan nilai " + e, "Error", JOptionPane.ERROR_MESSAGE);
+                }
     }
 }
