@@ -53,6 +53,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -1729,24 +1731,14 @@ public class TPAAzkaAiniya {
                         Pembelajaran.jTextField26.setText(TPAAzkaAiniya.getNamaPembelajaranSiswa());
                     });
 
-                    
-//                        JComboBox cd = (JComboBox)e.getSource();
-//
-//                        String kodePembelajaranSiswaCombo1 = (String) cd.getSelectedItem();
-//                        TPAAzkaAiniya.setKodePembelajaranSiswa(kodePembelajaranSiswaCombo1);
-//                        namaPembelajaranSiswaFromCombo();
-//                        Pembelajaran.jTextField26.setText(TPAAzkaAiniya.getNamaPembelajaranSiswa());
-                    
-
+                   
                 } while (resultSet.next());
             }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
         }
-//        if (preparedStatement  != null) preparedStatement.close();
-//        if (connectionDatabase.connect() != null) connectionDatabase.connect().close();
-
+       
     }
 
     public void namaPembelajaranSiswaFromCombo() {
@@ -1958,10 +1950,6 @@ public class TPAAzkaAiniya {
         c.gridy = 7;
         panelSemuaSoal.add(panelNilai8, c);
 
-//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
-
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == 0) {
@@ -2086,6 +2074,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 10;
                 panelInformasiNilai.add(panelSoal8, c2);
+                
+                simpanNilaiLanjut();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
             } else {
@@ -2179,6 +2169,7 @@ public class TPAAzkaAiniya {
                 c2.gridy = 10;
                 panelInformasiNilai.add(panelSoal8, c2);
 
+                simpanNilaiMengulang();
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
             }
@@ -2476,6 +2467,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 9;
                 panelInformasiNilai.add(panelSoal7, c2);
+                
+                simpanNilaiLanjut();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
             } else {
@@ -2562,6 +2555,7 @@ public class TPAAzkaAiniya {
                 c2.gridy = 9;
                 panelInformasiNilai.add(panelSoal7, c2);
 
+                simpanNilaiMengulang();
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
             }
@@ -2824,6 +2818,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 8;
                 panelInformasiNilai.add(panelSoal6, c2);
+                
+                simpanNilaiLanjut();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
             } else {
@@ -2902,6 +2898,7 @@ public class TPAAzkaAiniya {
                 c2.gridy = 8;
                 panelInformasiNilai.add(panelSoal6, c2);
 
+                simpanNilaiMengulang();
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
             }
@@ -3132,6 +3129,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 7;
                 panelInformasiNilai.add(panelSoal5, c2);
+                
+                simpanNilaiLanjut();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
             } else {
@@ -3201,6 +3200,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 7;
                 panelInformasiNilai.add(panelSoal5, c2);
+                
+                simpanNilaiMengulang();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
@@ -3313,10 +3314,6 @@ public class TPAAzkaAiniya {
         panelSemuaSoal.add(panelNilai4, c);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
-
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == 0) {
@@ -3400,6 +3397,8 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 6;
                 panelInformasiNilai.add(panelSoal4, c2);
+                
+                simpanNilaiLanjut();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Lanjut", JOptionPane.PLAIN_MESSAGE);
                 
@@ -3458,6 +3457,7 @@ public class TPAAzkaAiniya {
                 c2.gridx = 0;
                 c2.gridy = 6;
                 panelInformasiNilai.add(panelSoal4, c2);
+                simpanNilaiMengulang();
 
                 JOptionPane.showMessageDialog(null, panelInformasiNilai, "Mengulang", JOptionPane.PLAIN_MESSAGE);
 
@@ -3541,10 +3541,6 @@ public class TPAAzkaAiniya {
         c.gridy = 2;
         panelSemuaSoal.add(panelNilai3, c);
         c.fill = GridBagConstraints.HORIZONTAL;
-
-//        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-//        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-//        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
@@ -3729,9 +3725,64 @@ public class TPAAzkaAiniya {
                     
                     
                     preparedStatement.setString(6, Pembelajaran.jSpinner1.getValue().toString()); //halaman
-                    String nilaiPembelajaranToDB;
-                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
-                    preparedStatement.setString(7, nilaiPembelajaranToDB); //nilai pembelajaran
+                    
+                    ArrayList<String> nilai = new ArrayList<>();
+                    String levelUntukNilai = TPAAzkaAiniya.getNamaPembelajaranSiswa();
+                    System.out.println("Level Siswa untuk nilai " + levelUntukNilai);
+            switch (levelUntukNilai) {
+                case "Iqra I":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    break;
+                case "Iqra II":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    break;
+                case "Iqra III":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    break;
+                case "Iqra IV":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    break;
+                case "Iqra V":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    nilai.add(jSpinner7.getValue().toString());
+                    break;
+                case "Iqra VI":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    nilai.add(jSpinner7.getValue().toString());
+                    nilai.add(jSpinner8.getValue().toString());
+                    break;
+                default:
+                    break;
+            }
+                    
+                    System.out.println("nilai dari Arraylist "+String.join(" ", nilai));
+                    String listNilai = String.join(" ", nilai);
+                    
+                    preparedStatement.setString(7, listNilai); //nilai pembelajaran
                     preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
                     preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
                     preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
@@ -3756,7 +3807,7 @@ public class TPAAzkaAiniya {
                     java.sql.Timestamp timestamp;
                     String sqlQuery = "SELECT noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran FROM pembelajaran_siswa WHERE noPembelajaranSiswa = ?";
                     preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
-                    preparedStatement.setString(1, (String) Pembelajaran.jComboBox7.getSelectedItem());
+                    preparedStatement.setString(1, TPAAzkaAiniya.getNamaPembelajaranSiswa());
                     resultSet = preparedStatement.executeQuery();
                     
 
@@ -3785,18 +3836,70 @@ public class TPAAzkaAiniya {
                     
                     
                     preparedStatement.setString(6, Pembelajaran.jSpinner1.getValue().toString()); //halaman
-                    String nilaiPembelajaranToDB;
-                    nilaiPembelajaranToDB = jSpinner1.getValue().toString() + " " + jSpinner2.getValue().toString() + " " + jSpinner3.getValue();
-                    preparedStatement.setString(7, nilaiPembelajaranToDB); //nilai pembelajaran
+                    
+                    ArrayList<String> nilai = new ArrayList<>();
+                    String levelUntukNilai = TPAAzkaAiniya.getNamaPembelajaranSiswa();
+                    System.out.println("Level Siswa untuk nilai " + levelUntukNilai);
+            switch (levelUntukNilai) {
+                case "Iqra I":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    break;
+                case "Iqra II":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    break;
+                case "Iqra III":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    break;
+                case "Iqra IV":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    break;
+                case "Iqra V":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    nilai.add(jSpinner7.getValue().toString());
+                    break;
+                case "Iqra VI":
+                    nilai.add(jSpinner1.getValue().toString());
+                    nilai.add(jSpinner2.getValue().toString());
+                    nilai.add(jSpinner3.getValue().toString());
+                    nilai.add(jSpinner4.getValue().toString());
+                    nilai.add(jSpinner5.getValue().toString());
+                    nilai.add(jSpinner6.getValue().toString());
+                    nilai.add(jSpinner7.getValue().toString());
+                    nilai.add(jSpinner8.getValue().toString());
+                    break;
+                default:
+                    break;
+            }
+                    
+                    System.out.println("nilai dari Arraylist "+String.join(" ", nilai));
+                    String listNilai = String.join(" ", nilai);
+                    
+                    preparedStatement.setString(7, listNilai); //nilai pembelajaran
                     preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
                     preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
                     preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
-                    
                     preparedStatement.setString(11, resultSet.getString("BiayaPembelajaran"));
                     preparedStatement.setString(12, resultSet.getString("userMadePembelajaranSiswa"));
                     preparedStatement.setTimestamp(13, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
-                    
-//                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem()); //pembelajaran 
                     preparedStatement.executeUpdate();
                     
                 }catch(SQLException e) {
