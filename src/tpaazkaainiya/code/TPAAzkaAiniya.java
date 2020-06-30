@@ -3906,4 +3906,22 @@ public class TPAAzkaAiniya {
                     JOptionPane.showMessageDialog(null, "Error gagal simpan nilai " + e, "Error", JOptionPane.ERROR_MESSAGE);
                 }
     }
+    
+    public void namaSiswaUntukSPP() throws SQLException {
+        String sqlQuery = "SELECT `kodePembelajaran`, `namaPembelajaran` FROM `pembelajaran`";
+        preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
+        resultSet = preparedStatement.executeQuery();
+        
+        JPanel panel = new JPanel();
+
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tabel Pembelajaran", TitledBorder.CENTER, TitledBorder.TOP));
+
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Kode Pembelajaran", "Nama Pembelajaran"}, 0);
+        
+        while (resultSet.next()) {
+            String d = resultSet.getString("kodePembelajaran");
+            String e = resultSet.getString("namaPembelajaran");
+            model.addRow(new Object[]{d, e});
+        }
+    }
 }
