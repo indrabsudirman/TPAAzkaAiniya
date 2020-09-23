@@ -5,6 +5,7 @@
  */
 package tpaazkaainiya.code;
 
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -47,9 +48,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,13 +88,25 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import org.apache.commons.io.FileUtils;
+import tpaazkaainiya.Laporan;
 import tpaazkaainiya.Login;
 import tpaazkaainiya.Pembelajaran;
+import tpaazkaainiya.SPP;
 import tpaazkaainiya.SignUp;
 import tpaazkaainiya.Siswa;
 
@@ -206,6 +222,9 @@ public class TPAAzkaAiniya {
         TPAAzkaAiniya.noInduk = noInduk;
     }
 
+    double amoun;
+    double amount;
+    
     NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ID"));
     JTable table;
     TableColumn column;
@@ -562,22 +581,24 @@ public class TPAAzkaAiniya {
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.util.Date utilDate1 = (java.util.Date) Siswa.jDateChooser3.getDate(); //jDateChooser3
                 java.sql.Date sqlDate1 = new java.sql.Date(utilDate1.getTime());
-                String sqlQuery = ("insert into siswa (noInduk, namaLengkap, namaPanggilan, tempatLahir, tanggalLahir, tanggalMasukTPA, namaAyah, namaIbu, noTelpAyahIbu, noWaAyahIbu, alamatLengkap, fotoSiswa, user) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                String sqlQuery = ("insert into siswa (noInduk, namaLengkap, namaPanggilan, jenisKelamin, tempatLahir, tanggalLahir, tanggalMasukTPA, namaAyah, namaIbu, noTelpAyahIbu, noWaAyahIbu, alamatLengkap, fotoSiswa, user) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 connectionDatabase.connect();
                 preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
                 preparedStatement.setString(1, Siswa.jTextField1.getText() + " " + Siswa.jTextField5.getText());
                 preparedStatement.setString(2, Siswa.jTextField2.getText());
                 preparedStatement.setString(3, Siswa.jTextField4.getText());
-                preparedStatement.setString(4, Siswa.jTextField3.getText());
-                preparedStatement.setDate(5, sqlDate);
-                preparedStatement.setDate(6, sqlDate1);
-                preparedStatement.setString(7, Siswa.jTextField7.getText());
-                preparedStatement.setString(8, Siswa.jTextField11.getText());
-                preparedStatement.setString(9, Siswa.jTextField9.getText());
-                preparedStatement.setString(10, Siswa.jTextField10.getText());
-                preparedStatement.setString(11, Siswa.jTextArea1.getText());
-                preparedStatement.setString(12, newPath);
-                preparedStatement.setString(13, Siswa.jLabel1.getText());
+                System.out.println("Combo Box Jenis Kelamin " + Siswa.jComboBox1.getSelectedItem().toString());
+                preparedStatement.setString(4, Siswa.jComboBox1.getSelectedItem().toString());
+                preparedStatement.setString(5, Siswa.jTextField3.getText());
+                preparedStatement.setDate(6, sqlDate);
+                preparedStatement.setDate(7, sqlDate1);
+                preparedStatement.setString(8, Siswa.jTextField7.getText());
+                preparedStatement.setString(9, Siswa.jTextField11.getText());
+                preparedStatement.setString(10, Siswa.jTextField9.getText());
+                preparedStatement.setString(11, Siswa.jTextField10.getText());
+                preparedStatement.setString(12, Siswa.jTextArea1.getText());
+                preparedStatement.setString(13, newPath);
+                preparedStatement.setString(14, Siswa.jLabel1.getText());
                 preparedStatement.executeUpdate();
                 TPAAzkaAiniya.setIfTrueForCheck(true);
                 JOptionPane.showMessageDialog(null, "Yeah, data berhasil disimpan ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
@@ -598,22 +619,24 @@ public class TPAAzkaAiniya {
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.util.Date utilDate1 = (java.util.Date) Siswa.jDateChooser3.getDate(); //jDateChooser3
                 java.sql.Date sqlDate1 = new java.sql.Date(utilDate1.getTime());
-                String sqlQuery = ("insert into siswa (noInduk, namaLengkap, namaPanggilan, tempatLahir, tanggalLahir, tanggalMasukTPA, namaAyah, namaIbu, noTelpAyahIbu, noWaAyahIbu, alamatLengkap, fotoSiswa, user) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                String sqlQuery = ("insert into siswa (noInduk, namaLengkap, namaPanggilan, jenisKelamin, tempatLahir, tanggalLahir, tanggalMasukTPA, namaAyah, namaIbu, noTelpAyahIbu, noWaAyahIbu, alamatLengkap, fotoSiswa, user) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 connectionDatabase.connect();
                 preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
                 preparedStatement.setString(1, Siswa.jTextField1.getText() + " " + Siswa.jTextField5.getText());
                 preparedStatement.setString(2, Siswa.jTextField2.getText());
                 preparedStatement.setString(3, Siswa.jTextField4.getText());
-                preparedStatement.setString(4, Siswa.jTextField3.getText());
-                preparedStatement.setDate(5, sqlDate);
-                preparedStatement.setDate(6, sqlDate1);
-                preparedStatement.setString(7, Siswa.jTextField7.getText());
-                preparedStatement.setString(8, Siswa.jTextField11.getText());
-                preparedStatement.setString(9, Siswa.jTextField9.getText());
-                preparedStatement.setString(10, Siswa.jTextField10.getText());
-                preparedStatement.setString(11, Siswa.jTextArea1.getText());
-                preparedStatement.setString(12, pathFotoSiswa);
-                preparedStatement.setString(13, Siswa.jLabel1.getText());
+                System.out.println("Combo Box Jenis Kelamin " + Siswa.jComboBox1.getSelectedItem().toString());
+                preparedStatement.setString(4, Siswa.jComboBox1.getSelectedItem().toString());
+                preparedStatement.setString(5, Siswa.jTextField3.getText());
+                preparedStatement.setDate(6, sqlDate);
+                preparedStatement.setDate(7, sqlDate1);
+                preparedStatement.setString(8, Siswa.jTextField7.getText());
+                preparedStatement.setString(9, Siswa.jTextField11.getText());
+                preparedStatement.setString(10, Siswa.jTextField9.getText());
+                preparedStatement.setString(11, Siswa.jTextField10.getText());
+                preparedStatement.setString(12, Siswa.jTextArea1.getText());
+                preparedStatement.setString(13, pathFotoSiswa);
+                preparedStatement.setString(14, Siswa.jLabel1.getText());
                 preparedStatement.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Yeah, data berhasil disimpan ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
@@ -832,17 +855,25 @@ public class TPAAzkaAiniya {
                 Siswa.jTextField6.setText(noIndukDBArray[1]);
                 Siswa.jTextField15.setText(resultSet.getString(2));
                 Siswa.jTextField8.setText(resultSet.getString(3));
-                Siswa.jTextField14.setText(resultSet.getString(4));
+                String jenisKelaminFromDB = resultSet.getString(4);
+                int indexJenisKelamin = 1;
+                if (jenisKelaminFromDB.equals("Laki-laki")) {
+                    indexJenisKelamin = 0;
+                } else {
+                    indexJenisKelamin = 1;
+                }
+                Siswa.jComboBox2.setSelectedIndex(indexJenisKelamin); 
+                Siswa.jTextField14.setText(resultSet.getString(5));
                 Date birthDateStudent = resultSet.getDate("tanggalLahir");
                 Siswa.jDateChooser5.setDate(birthDateStudent);
                 Date joinDateStudent = resultSet.getDate("tanggalMasukTPA");
                 Siswa.jDateChooser4.setDate(joinDateStudent);
-                Siswa.jTextField16.setText(resultSet.getString(7));
-                Siswa.jTextField13.setText(resultSet.getString(8));
-                Siswa.jTextField18.setText(resultSet.getString(9));
-                Siswa.jTextField17.setText(resultSet.getString(10));
-                Siswa.jTextArea2.setText(resultSet.getString(11));
-                String imagePath = resultSet.getString(12);
+                Siswa.jTextField16.setText(resultSet.getString(8));
+                Siswa.jTextField13.setText(resultSet.getString(9));
+                Siswa.jTextField18.setText(resultSet.getString(10));
+                Siswa.jTextField17.setText(resultSet.getString(11));
+                Siswa.jTextArea2.setText(resultSet.getString(12));
+                String imagePath = resultSet.getString(13);
                 Siswa.jLabel45.setIcon(resizeImage(imagePath));
             }
         } catch (SQLException e) {
@@ -872,17 +903,25 @@ public class TPAAzkaAiniya {
                 Siswa.jTextField6.setText(noIndukDBArray[1]);
                 Siswa.jTextField15.setText(resultSet.getString(2));
                 Siswa.jTextField8.setText(resultSet.getString(3));
-                Siswa.jTextField14.setText(resultSet.getString(4));
+                String jenisKelaminFromDB = resultSet.getString(4);
+                int indexJenisKelamin = 1;
+                if (jenisKelaminFromDB.equals("Laki-laki")) {
+                    indexJenisKelamin = 0;
+                } else {
+                    indexJenisKelamin = 1;
+                }
+                Siswa.jComboBox2.setSelectedIndex(indexJenisKelamin); 
+                Siswa.jTextField14.setText(resultSet.getString(5));
                 Date birthDateStudent = resultSet.getDate("tanggalLahir");
                 Siswa.jDateChooser5.setDate(birthDateStudent);
                 Date joinDateStudent = resultSet.getDate("tanggalMasukTPA");
                 Siswa.jDateChooser4.setDate(joinDateStudent);
-                Siswa.jTextField16.setText(resultSet.getString(7));
-                Siswa.jTextField13.setText(resultSet.getString(8));
-                Siswa.jTextField18.setText(resultSet.getString(9));
-                Siswa.jTextField17.setText(resultSet.getString(10));
-                Siswa.jTextArea2.setText(resultSet.getString(11));
-                String imagePath = resultSet.getString(12);
+                Siswa.jTextField16.setText(resultSet.getString(8));
+                Siswa.jTextField13.setText(resultSet.getString(9));
+                Siswa.jTextField18.setText(resultSet.getString(10));
+                Siswa.jTextField17.setText(resultSet.getString(11));
+                Siswa.jTextArea2.setText(resultSet.getString(12));
+                String imagePath = resultSet.getString(13);
                 Siswa.jLabel45.setIcon(resizeImage(imagePath));
             }
         } catch (SQLException e) {
@@ -1030,24 +1069,25 @@ public class TPAAzkaAiniya {
                 try {
 
                     connectionDatabase.connect();
-                    String userUpdateQuery = "UPDATE siswa SET namaLengkap = ?, namaPanggilan = ?, tempatLahir = ?, tanggalLahir = ?, tanggalMasukTPA = ?, namaAyah = ?, namaIbu = ?, noTelpAyahIbu = ?, noWaAyahIbu = ?, alamatLengkap = ?, fotoSiswa = ?, userMadeEdit = ?, tanggalDiedit = ? WHERE noInduk = ?";
+                    String userUpdateQuery = "UPDATE siswa SET namaLengkap = ?, namaPanggilan = ?, jenisKelamin = ?, tempatLahir = ?, tanggalLahir = ?, tanggalMasukTPA = ?, namaAyah = ?, namaIbu = ?, noTelpAyahIbu = ?, noWaAyahIbu = ?, alamatLengkap = ?, fotoSiswa = ?, userMadeEdit = ?, tanggalDiedit = ? WHERE noInduk = ?";
                     preparedStatement = connectionDatabase.connection.prepareStatement(userUpdateQuery);
                     preparedStatement.setString(1, Siswa.jTextField15.getText());
                     preparedStatement.setString(2, Siswa.jTextField8.getText());
-                    preparedStatement.setString(3, Siswa.jTextField14.getText());
-                    preparedStatement.setDate(4, sqlDateLahir);
-                    preparedStatement.setDate(5, sqlDateJoin);
-                    preparedStatement.setString(6, Siswa.jTextField16.getText());
-                    preparedStatement.setString(7, Siswa.jTextField13.getText());
-                    preparedStatement.setString(8, Siswa.jTextField18.getText());
-                    preparedStatement.setString(9, Siswa.jTextField17.getText());
-                    preparedStatement.setString(10, Siswa.jTextArea2.getText());
-                    preparedStatement.setString(11, newPath);
-                    preparedStatement.setString(12, userUpdate);
-                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date.getTime()));
+                    preparedStatement.setString(3, Siswa.jComboBox2.getSelectedItem().toString());
+                    preparedStatement.setString(4, Siswa.jTextField14.getText());
+                    preparedStatement.setDate(5, sqlDateLahir);
+                    preparedStatement.setDate(6, sqlDateJoin);
+                    preparedStatement.setString(7, Siswa.jTextField16.getText());
+                    preparedStatement.setString(8, Siswa.jTextField13.getText());
+                    preparedStatement.setString(9, Siswa.jTextField18.getText());
+                    preparedStatement.setString(10, Siswa.jTextField17.getText());
+                    preparedStatement.setString(11, Siswa.jTextArea2.getText());
+                    preparedStatement.setString(12, newPath);
+                    preparedStatement.setString(13, userUpdate);
+                    preparedStatement.setTimestamp(14, new java.sql.Timestamp(date.getTime()));
 
 //                    preparedStatement.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
-                    preparedStatement.setString(14, noIndukToUpdate);
+                    preparedStatement.setString(15, noIndukToUpdate);
                     preparedStatement.execute();
 
                     JLabel[] jLabel1 = {new JLabel("Berhasil dihapus"), new JLabel("No Induk : " + noIndukToUpdate), new JLabel("Nama : " + siswaToUpdate)};
@@ -1068,24 +1108,25 @@ public class TPAAzkaAiniya {
                 try {
 
                     connectionDatabase.connect();
-                    String userUpdateQuery = "UPDATE siswa SET namaLengkap = ?, namaPanggilan = ?, tempatLahir = ?, tanggalLahir = ?, tanggalMasukTPA = ?, namaAyah = ?, namaIbu = ?, noTelpAyahIbu = ?, noWaAyahIbu = ?, alamatLengkap = ?, userMadeEdit = ?, tanggalDiedit = ? WHERE noInduk = ?";
+                    String userUpdateQuery = "UPDATE siswa SET namaLengkap = ?, namaPanggilan = ?, jenisKelamin = ?, tempatLahir = ?, tanggalLahir = ?, tanggalMasukTPA = ?, namaAyah = ?, namaIbu = ?, noTelpAyahIbu = ?, noWaAyahIbu = ?, alamatLengkap = ?, userMadeEdit = ?, tanggalDiedit = ? WHERE noInduk = ?";
                     preparedStatement = connectionDatabase.connection.prepareStatement(userUpdateQuery);
                     preparedStatement.setString(1, Siswa.jTextField15.getText());
                     preparedStatement.setString(2, Siswa.jTextField8.getText());
-                    preparedStatement.setString(3, Siswa.jTextField14.getText());
-                    preparedStatement.setDate(4, sqlDateLahir);
-                    preparedStatement.setDate(5, sqlDateJoin);
-                    preparedStatement.setString(6, Siswa.jTextField16.getText());
-                    preparedStatement.setString(7, Siswa.jTextField13.getText());
-                    preparedStatement.setString(8, Siswa.jTextField18.getText());
-                    preparedStatement.setString(9, Siswa.jTextField17.getText());
-                    preparedStatement.setString(10, Siswa.jTextArea2.getText());
-                    preparedStatement.setString(11, userUpdate);
-                    preparedStatement.setTimestamp(12, new java.sql.Timestamp(date.getTime()));
+                    preparedStatement.setString(3, Siswa.jComboBox2.getSelectedItem().toString());
+                    preparedStatement.setString(4, Siswa.jTextField14.getText());
+                    preparedStatement.setDate(5, sqlDateLahir);
+                    preparedStatement.setDate(6, sqlDateJoin);
+                    preparedStatement.setString(7, Siswa.jTextField16.getText());
+                    preparedStatement.setString(8, Siswa.jTextField13.getText());
+                    preparedStatement.setString(9, Siswa.jTextField18.getText());
+                    preparedStatement.setString(10, Siswa.jTextField17.getText());
+                    preparedStatement.setString(11, Siswa.jTextArea2.getText());
+                    preparedStatement.setString(12, userUpdate);
+                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date.getTime()));
 //                    preparedStatement.setString(11, newPath);
 
 //                    preparedStatement.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
-                    preparedStatement.setString(13, noIndukToUpdate);
+                    preparedStatement.setString(14, noIndukToUpdate);
                     preparedStatement.execute();
 
                     JLabel[] jLabel1 = {new JLabel("Berhasil diupdate"), new JLabel("No Induk : " + noIndukToUpdate), new JLabel("Nama : " + siswaToUpdate)};
@@ -1197,8 +1238,7 @@ public class TPAAzkaAiniya {
       @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
-            }
-        ;
+            };
         };
       
       
@@ -1649,6 +1689,22 @@ public class TPAAzkaAiniya {
             String tampilRupiah = numberFormat.format(new BigDecimal(TPAAzkaAiniya.getPembelajaranBiaya()));
             Pembelajaran.jFormattedTextField3.setText(tampilRupiah);
         });
+    }
+
+    private String[] GetStringArray(ArrayList listData) {
+        // declaration and initialise String Array 
+        String str[] = new String[listData.size()]; 
+  
+        // Convert ArrayList to object array 
+        Object[] objArr = listData.toArray(); 
+  
+        // Iterating and converting to String 
+        int i = 0; 
+        for (Object obj : objArr) { 
+            str[i++] = (String)obj; 
+        } 
+  
+        return str;
     }
 
     private static class MyComboBoxRender extends JLabel implements ListCellRenderer {
@@ -3907,21 +3963,278 @@ public class TPAAzkaAiniya {
                 }
     }
     
-    public void namaSiswaUntukSPP() throws SQLException {
-        String sqlQuery = "SELECT `kodePembelajaran`, `namaPembelajaran` FROM `pembelajaran`";
+    public void namaSiswaUntukSPP() throws SQLException, ParseException {
+        
+        String tampilRupiah ="";
+        String e = "";
+        ArrayList listData = new ArrayList();
+        connectionDatabase.connect();
+        String sqlQuery = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`, `tanggalDaftarPembelajaran`, `biayaPembelajaran` FROM `pembelajaran_siswa`";
         preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
         resultSet = preparedStatement.executeQuery();
         
         JPanel panel = new JPanel();
 
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tabel Pembelajaran", TitledBorder.CENTER, TitledBorder.TOP));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Pilih Siswa", TitledBorder.CENTER, TitledBorder.TOP));
 
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Kode Pembelajaran", "Nama Pembelajaran"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"No Induk", "Nama Lengkap", "Nama Pembelajaran", "Daftar Pembelajaran", "Biaya Pembelajaran"}, 0);
         
         while (resultSet.next()) {
-            String d = resultSet.getString("kodePembelajaran");
-            String e = resultSet.getString("namaPembelajaran");
-            model.addRow(new Object[]{d, e});
+            String a = resultSet.getString("noInduk");
+            String b = resultSet.getString("namaLengkap");
+            String c = resultSet.getString("namaPembelajaran");
+            String d = resultSet.getString("tanggalDaftarPembelajaran");
+            e = resultSet.getString("biayaPembelajaran");
+            model.addRow(new Object[]{a, b, c, d, e});
+            tampilRupiah = numberFormat.format(new BigDecimal(e));
+//            String f = TPAAzkaAiniya.setPembelajaranBiaya(resultSet.getString("biayaPembelajaran"));
+            
         }
+        
+        table = new JTable(model) {
+
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                String tip = null;
+                java.awt.Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                int colIndex = columnAtPoint(p);
+                realColumnIndex = convertColumnIndexToModel(colIndex);
+
+                if (realColumnIndex == 1) {
+                    tip = "Klik 2 kali atau Klik OK untuk membayar SPP : "
+                            + getValueAt(rowIndex, colIndex);
+                } 
+                return tip;
+            }
+
+            ;
+
+      @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+        
+        //Add listener double click
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {     // detect double click events
+                    JTable target = (JTable) e.getSource();
+                    int row = target.getSelectedRow(); // select a row
+                    int column = target.getSelectedColumn(); // select a column
+
+                    TPAAzkaAiniya laundry = new TPAAzkaAiniya();
+
+                    if (column == 0) { //gw cuma ambil logic berdasarkan kolom
+                        int input = JOptionPane.showConfirmDialog(null, "Yakin ingin edit Kode Pembelajaran " + table.getValueAt(row, column) + "?", "Konfirmasi edit pembelajaran", JOptionPane.YES_NO_OPTION);
+                        TPAAzkaAiniya.setKodePembelajaran((String) table.getValueAt(row, column)); //table.getValueAt(row, column)
+                        System.out.println(input + " " + TPAAzkaAiniya.getKodePembelajaran());
+                        try {
+                            showDataPembelajaranByKodePembelajaran();
+                            Window win = SwingUtilities.getWindowAncestor(panel);
+                            win.setVisible(false);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(TPAAzkaAiniya.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        int input = JOptionPane.showConfirmDialog(null, "Yakin ingin edit Nama Pembelajaran " + table.getValueAt(row, column) + "?", "Konfirmasi edit pembelajaran", JOptionPane.YES_NO_OPTION);
+                        TPAAzkaAiniya.setNamaPembelajaran((String) table.getValueAt(row, column));
+                        System.out.println(input + " " + TPAAzkaAiniya.getNamaPembelajaran());
+                        try {
+                            showDataPembelajaranByNama();
+                            Window win = SwingUtilities.getWindowAncestor(panel);
+                            win.setVisible(false);
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(TPAAzkaAiniya.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }
+            }
+        });
+        
+        
+               
+        panel.add(new JScrollPane(table));
+        String[] options = new String[]{"    OK    ", "Cancel"};
+        int option = JOptionPane.showOptionDialog(null, panel, "Pilih Pembelajaran", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (option == 0) {
+            int row = table.getSelectedRow();
+            int column = table.getColumnCount();
+            for(int i = 0; i < column; i++) {
+//                System.out.println("Data manual "+table.getValueAt(row, i));
+                listData.add(table.getValueAt(row, i)+ " ");
+                 
+                }
+            listData.forEach(System.out::println);
+            String firstElement = listData.get(0).toString();
+            
+            
+            String [] str = GetStringArray(listData);
+            System.out.println("No Induk " + str[0] );
+            SimpleDateFormat formatter3=new SimpleDateFormat("MM dd, yyyy");
+////            Date date3=formatter3.parse(str[3]);
+//            String strDate = formatter3.format(date3); 
+
+            amount = Double.parseDouble(str[4]);
+            tampilRupiah = numberFormat.format(new BigDecimal(amount));
+            String [] tanggalAja = str[3].split(" ");
+            SPP.jTextField1.setText(str[0]);
+            SPP.jTextField2 .setText(str[1]);
+            SPP.jTextField3.setText(str[2]);
+            SPP.jTextField4.setText(tanggalAja[0]); 
+            SPP.jTextField5.setText("Rp" +tampilRupiah+",00");
+            SPP.jButton2.setEnabled(true);
+            SPP.jTextField9.setText(str[0]);
+            SPP.jTextField10 .setText(str[1]);
+            SPP.jTextField6.setText(str[2]); 
+            SPP.jTextField7.setText("Rp" +tampilRupiah+",00");
+            
+            System.out.println("str[4]" + str[4]);
+            
+            TPAAzkaAiniya.setPembelajaranBiaya(str[4]); 
+            
+            SPP.jLabel18.setText("Rp" +tampilRupiah+",00");
+            SPP.jSpinner1.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent arg0) {
+                    
+                    int total = (Integer) SPP.jSpinner1.getValue();
+                    amoun = amount * total;
+                    String tampilRupiah = numberFormat.format(new BigDecimal(amoun));
+                    System.out.println("amount "+ "Rp"+tampilRupiah+",00");
+                    SPP.jLabel18.setText("Rp" +tampilRupiah+",00");
+                    
+                    }
+            });
+            } 
     }
+    
+    
+    public void PembayaranSPP() throws JRException {
+        try {
+
+            String sqlQuery = ("insert into spp_siswa (noInduk, namaLengkap, namaPembelajaran, biayaPembelajaran, banyakSppPerBulan, totalBayar, userMadePembelajaran) values (?, ?, ?, ?, ?, ?, ?)");
+            connectionDatabase.connect();
+            preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, SPP.jTextField9.getText());
+            preparedStatement.setString(2, SPP.jTextField10.getText());
+            preparedStatement.setString(3, SPP.jTextField6.getText());
+            String biayaPembelajaran = TPAAzkaAiniya.getPembelajaranBiaya();
+            preparedStatement.setString(4, biayaPembelajaran);
+            int total = (Integer) SPP.jSpinner1.getValue();
+            preparedStatement.setInt(5, total);
+            amoun = amount * total;
+            preparedStatement.setDouble(6, amoun); 
+            preparedStatement.setString(7, SPP.jLabel1.getText());
+            preparedStatement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Yeah, SPP Siswa berhasil dibayar ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
+            
+            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
+            
+            JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+            
+            JasperPrint jPrint = JasperFillManager.fillReport(jReport,null ,connectionDatabase.connect());
+            JasperViewer.viewReport(jPrint, false);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    
+    public void tabelLaporanDataSiswa(JTable table, String query) throws SQLException {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        try {
+            
+            connectionDatabase.connect();
+            Statement stat = connectionDatabase.connect().createStatement();
+            ResultSet rs = stat.executeQuery(query);
+//            String sqlQuery = "SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `namaAyah`, `namaIbu`, `alamatLengkap` FROM `siswa`";
+//            preparedStatement = connectionDatabase.connection.prepareStatement(query);
+//            resultSet = preparedStatement.executeQuery();
+            
+            //To remove previously added rows
+            while (table.getRowCount() > 0) {
+                model.removeRow(0);
+            }
+            
+            
+            
+            int columns = rs.getMetaData().getColumnCount();
+            while (rs.next()) {
+                Object [] row = new Object[columns];
+                for (int i = 1; i< columns; i++) {
+                    row[i - 1] = rs.getObject(i);
+                }
+//                model.setDataVector(dataVector, row);
+                model.insertRow(resultSet.getRow()-1,row);
+            }
+            
+            rs.close();
+            stat.close();
+            connectionDatabase.connect().close();
+        } catch (SQLException e) {
+        }
+        
+    }
+    
+    public void resultSetToTableModel(ResultSet rs, JTable table) throws SQLException{
+        //Create new table model
+        DefaultTableModel tableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {       
+            return false; // or a condition at your choice with row and column
+   }
+        };
+
+        //Retrieve meta data from ResultSet
+        ResultSetMetaData metaData = (ResultSetMetaData) rs.getMetaData();
+
+        //Get number of columns from meta data
+        int columnCount = metaData.getColumnCount();
+
+        //Get all column names from meta data and add columns to table model
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
+            tableModel.addColumn(metaData.getColumnLabel(columnIndex));
+        }
+
+        //Create array of Objects with size of column count from meta data
+        Object[] row = new Object[columnCount];
+
+        //Scroll through result set
+        while (rs.next()){
+            //Get object from column with specific index of result set to array of objects
+            for (int i = 0; i < columnCount; i++){
+                row[i] = rs.getObject(i+1);
+            }
+            //Now add row to table model with that array of objects as an argument
+            tableModel.addRow(row);
+        }
+        
+        
+
+        //Now add that table model to your table and you are done :D
+        table.setModel(tableModel);
+//        table.setEnabled(false); 
+    }
+    
+    public void cetakBiodataSiswa() throws JRException, SQLException {
+        TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
+        String noInduk = tpaAzkaAiniya.getNoInduk();
+        System.out.println("Nilai nomor Induk Siswa di getNoInduk adalah : " + tpaAzkaAiniya.getNoInduk());
+        
+        HashMap param = new HashMap();
+        param.put("noIndukSiswa", noInduk);
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
+ 
+        JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+            
+        JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
+        JasperViewer.viewReport(jPrint, false);
+    }
+
 }

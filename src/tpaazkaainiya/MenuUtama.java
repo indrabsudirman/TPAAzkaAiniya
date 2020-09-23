@@ -25,7 +25,9 @@ import static java.awt.Color.blue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
@@ -34,14 +36,16 @@ import javafx.embed.swing.JFXPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import static tpaazkaainiya.Login.jTextField1;
+import tpaazkaainiya.code.ConnectionDatabase;
 import tpaazkaainiya.code.TPAAzkaAiniya;
 
 public class MenuUtama extends javax.swing.JFrame {
     
     
     
-   
+   ConnectionDatabase connectionDatabase = new ConnectionDatabase();
     
     
     /**
@@ -600,13 +604,31 @@ public class MenuUtama extends javax.swing.JFrame {
         sPP.setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+    TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
     Laporan laporan = new Laporan();
+//    ConnectionDatabase() connectionDatabase;// = new ConnectionDatabase();
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         String username = jTextField1.getText();
         laporan.setUsername(username);
         laporan.setVisible(true); 
         this.dispose();
+       try {
+           String query = "SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `namaAyah`, `namaIbu`  FROM `siswa`";
+           connectionDatabase.connect();
+           Statement stat = connectionDatabase.connect().createStatement();
+           ResultSet rs = stat.executeQuery(query);
+           tpaAzkaAiniya.resultSetToTableModel(rs, Laporan.jTable1);
+       } catch (SQLException ex) {
+           Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+       }
+            
+//        try {
+//            DefaultTableModel tableModel = new DefaultTableModel();
+//            
+//        } catch (SQLException ex) {
+//            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_jButton4ActionPerformed
     AksesCepat aksesCepat = new AksesCepat();
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

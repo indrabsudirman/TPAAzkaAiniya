@@ -27,7 +27,7 @@ public class ConnectionDatabase {
             System.out.println("Gagal koneksi database " + e);
         }
         
-        String url = "jdbc:mysql://localhost/azkaainiya";
+        String url = "jdbc:mysql://localhost/azkaainiya?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
         try {
             connection = DriverManager.getConnection(url, "IndraSudirman", "Lubn4d4nNury");
             System.out.println("Berhasil koneksi database");

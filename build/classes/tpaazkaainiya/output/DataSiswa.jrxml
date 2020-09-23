@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="1" uuid="8bc6f4e1-075e-4f40-bf2b-5b60b837b3f5">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="4"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="noIndukSiswa" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ssw.noInduk, ssw.namaLengkap, ssw.jenisKelamin, ssw.tempatLahir, ssw.tanggalLahir, ssw.namaAyah, ssw.namaIbu, ssw.alamatLengkap, ssw.tanggalMasukTPA, pemb_ssw.namaPembelajaran FROM (siswa ssw LEFT JOIN pembelajaran_siswa pemb_ssw on ssw.noInduk = pemb_ssw.noInduk) WHERE ssw.noInduk = $P{noIndukSiswa}]]>
+	</queryString>
+	<field name="noInduk" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaLengkap" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="jenisKelamin" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tempatLahir" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tanggalLahir" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaAyah" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaIbu" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="alamatLengkap" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tanggalMasukTPA" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaPembelajaran" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="noInduk_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{noInduk}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="132" splitType="Stretch">
+			<line>
+				<reportElement x="2" y="125" width="553" height="1" uuid="6ca6d9af-a6f0-46eb-9628-b119273f0029"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="92" y="0" width="197" height="21" forecolor="#000000" uuid="bda554f6-00d0-487e-b8de-0e8b3bfa719f"/>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Taman Pendidikan Al-Qur'an (TPA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="123" y="21" width="125" height="37" forecolor="#000000" uuid="86e290bd-4891-4658-8eda-84da61c42059"/>
+				<textElement>
+					<font fontName="Impact" size="26" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Azka Ainiya]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="37" y="58" width="287" height="59" forecolor="#000000" uuid="25b4718e-9056-4d49-a797-4a5213237862"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Perumahan Griya Indah Serpong Blok O5/14
+Gunung Sindur Kab. Bogor
+0813 8020 0451
+]]></text>
+			</staticText>
+			<image>
+				<reportElement x="364" y="4" width="173" height="113" uuid="a08b6359-9044-4683-b4e0-aef65184ca81"/>
+				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="608" splitType="Stretch">
+			<image>
+				<reportElement x="153" y="251" width="384" height="39" uuid="f8d12ca0-1b46-4d82-aa69-7bd2e7979b84"/>
+				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Column header" x="192" y="7" width="173" height="24" forecolor="#000000" uuid="e9f9586d-efbb-4792-ae61-e050d9be3720"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Biodata Siswa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="111" width="137" height="18" forecolor="#000000" uuid="79ca5c4c-ffe4-40c4-a5ad-3784d21e86ef"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Jenis Kelamin]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="110" width="10" height="18" forecolor="#000000" uuid="a6cf75fd-da16-4705-9707-720670c7357c"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="82" width="137" height="18" forecolor="#000000" uuid="0181c236-1434-44cb-96bb-e581ae05c4f7"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nama Lengkap]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="54" width="10" height="18" forecolor="#000000" uuid="2d833ea5-830c-4dcb-869d-2abe8b30b3d4"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="54" width="137" height="18" forecolor="#000000" uuid="d33a4617-5a90-48c9-905c-a15731c3b27d"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nomor Induk]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="140" width="152" height="18" forecolor="#000000" uuid="10465d03-26ae-4f2d-b6dd-893bd7de1da7"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tempat dan Tanggal Lahir]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="82" width="10" height="18" forecolor="#000000" uuid="1905672c-e95e-406f-a653-07c7c2bbd0bd"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="140" width="10" height="18" forecolor="#000000" uuid="4050ecac-a9d4-4020-9516-fb43e92d9322"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="168" width="10" height="18" forecolor="#000000" uuid="9d4a4290-73cd-4f47-bf6b-0e17c10cab1c"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="168" width="152" height="18" forecolor="#000000" uuid="f299fb14-5359-4672-9b35-0c5277f04961"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nama Ayah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="199" width="10" height="18" forecolor="#000000" uuid="32dce19b-4761-4838-8ee4-db58edf32306"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="199" width="152" height="18" forecolor="#000000" uuid="836103bd-373f-4369-8f74-295b6e36fbbf"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nama Ibu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="230" width="10" height="18" forecolor="#000000" uuid="e52224f2-7c4f-4ddc-897a-8ce9b5086c75"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="230" width="152" height="18" forecolor="#000000" uuid="884df658-497f-45da-9258-d355bfdb9d8e"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Alamat Lengkap]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="324" width="10" height="18" forecolor="#000000" uuid="4756a351-ba25-4910-94af-9e9a3b99487d"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="324" width="152" height="18" forecolor="#000000" uuid="2932ede1-4e87-4024-93f7-7be513eeed2b"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Pembelajaran TPA saat ini]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="293" width="10" height="18" forecolor="#000000" uuid="6242138c-43db-4390-95bf-158a2de3da23"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="293" width="152" height="18" forecolor="#000000" uuid="e24c837f-0a8a-495d-8f87-159664545303"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tanggal masuk TPA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="20" y="356" width="152" height="18" forecolor="#000000" uuid="d46a1cbb-f0f1-41dc-8dda-cb66d3f4a8a6"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Foto Siswa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="356" width="10" height="18" forecolor="#000000" uuid="40da0d46-333b-4056-8d00-4a57d5e62e54"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="Column header" x="431" y="501" width="134" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="0f086071-4425-492e-9354-ebd409c2493b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("EEEE, dd MMMMM yyyy",new java.util.Locale("id")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="419" y="521" width="127" height="18" forecolor="#000000" uuid="17275631-91f0-4f7a-9790-833561570101"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Kepala TPA Azka Ainiya]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="405" y="588" width="142" height="18" forecolor="#000000" uuid="5a29bbf9-e167-48de-9bdd-4c4a4cd804d1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(Dewi Ratnawati S, S.Pd.I)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="194" y="56" width="100" height="20" uuid="428437bf-4b88-4cc4-b43d-7ca428035d12"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{noInduk}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="194" y="84" width="237" height="20" uuid="05ce4f88-fb52-44e4-9a1c-90801044b512"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{namaLengkap}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="194" y="111" width="100" height="20" uuid="cb0adde7-a3df-48df-88e8-873ce6f00cc6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jenisKelamin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="194" y="140" width="113" height="20" uuid="22516e3c-be1d-4e13-965e-887568a6fd31"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tempatLahir}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="307" y="140" width="10" height="18" forecolor="#000000" uuid="2663545b-4b8a-4fb7-a506-3fd36ea19cf9"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[,]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="194" y="168" width="223" height="20" uuid="6111c514-03d6-4207-930d-1d85414627c6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{namaAyah}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="194" y="199" width="222" height="20" uuid="87cc9994-4a37-4ff9-875f-50d7e49be44b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{namaIbu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="197" y="230" width="219" height="52" isRemoveLineWhenBlank="true" uuid="0b8948b0-abe3-4167-8533-5ad9f401b330"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{alamatLengkap}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement x="197" y="293" width="219" height="20" uuid="e3f2df64-32e0-4fa7-a11d-3d3fa37c8193"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd MMMMM yyyy",new java.util.Locale("id")).format($F{tanggalMasukTPA})]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement x="316" y="140" width="221" height="20" uuid="9d1d475b-0e30-45f0-bec4-77bad643fa72"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd MMMMM yyyy",new java.util.Locale("id")).format($F{tanggalLahir})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="324" width="219" height="20" uuid="67cac688-a222-41e6-88d9-c7de00667e26"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{namaPembelajaran}==null)? "-":$F{namaPembelajaran}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="234" y="356" width="108" height="130" uuid="b6620a79-b29c-4614-84b5-c951539f3e33"/>
+			</rectangle>
+			<image>
+				<reportElement x="234" y="356" width="108" height="130" uuid="f61992c9-fa38-44af-b861-73422d7ad253"/>
+			</image>
+		</band>
+	</columnHeader>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

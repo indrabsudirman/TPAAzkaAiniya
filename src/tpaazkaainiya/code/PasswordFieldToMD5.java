@@ -32,7 +32,7 @@ public class PasswordFieldToMD5 {
     public static String digest (char [] in, byte[] salt) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("MD5");
         
-        ArrayList<Byte> list = new ArrayList<Byte>();
+        ArrayList<Byte> list = new ArrayList<>();
         for (int i = 0; i<in.length; i++) {
             byte b = (byte) in[i];
                     list.add(b); 
