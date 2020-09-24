@@ -23,7 +23,9 @@ import static java.awt.Color.black;
 import tpaazkaainiya.code.BuzzActionListener;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,11 +38,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import net.sf.jasperreports.engine.JRException;
 import static tpaazkaainiya.Login.jTextField1;
+import static tpaazkaainiya.Siswa.jTabbedPane1;
+import tpaazkaainiya.code.ConnectionDatabase;
 import tpaazkaainiya.code.TPAAzkaAiniya;
 
 public final class Laporan extends javax.swing.JFrame {
     
     TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
+    ConnectionDatabase connectionDatabase = new ConnectionDatabase();
             
     
    
@@ -131,6 +136,11 @@ public final class Laporan extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
+            }
+        });
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -163,7 +173,6 @@ public final class Laporan extends javax.swing.JFrame {
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
             jTable1.getColumnModel().getColumn(2).setPreferredWidth(15);
-            jTable1.getColumnModel().getColumn(6).setCellRenderer(null);
         }
 
         jPanel21.setBackground(new java.awt.Color(255, 255, 255));
@@ -798,6 +807,40 @@ public final class Laporan extends javax.swing.JFrame {
             System.out.println("Nomor Induk yang anda klik adalah : " + firstElement);
             tpaAzkaAiniya.setNoInduk(firstElement);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        // TODO add your handling code here:
+        switch (jTabbedPane1.getSelectedIndex()) {
+            case 0:
+                System.out.println("Tab Laporan Data Siswa");
+                break;
+            case 1:
+                System.out.println("Tab Laporan Pembelajaran");
+                try {
+                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`  FROM `pembelajaran_siswa`";
+                    connectionDatabase.connect();
+                    Statement stat = connectionDatabase.connect().createStatement();
+                    ResultSet rs = stat.executeQuery(query);
+                    tpaAzkaAiniya.resultSetToTableModel(rs, jTable2);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case 2:
+                try {
+                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`,`biayaPembelajaran`  FROM `spp_siswa`";
+                    connectionDatabase.connect();
+                    Statement stat = connectionDatabase.connect().createStatement();
+                    ResultSet rs = stat.executeQuery(query);
+                    tpaAzkaAiniya.resultSetToTableModel(rs, jTable3);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_jTabbedPane1StateChanged
     
     /**
      * @param args the command line arguments
@@ -2917,7 +2960,7 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     public static javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    public static javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 

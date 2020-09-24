@@ -4134,7 +4134,7 @@ public class TPAAzkaAiniya {
 
             JOptionPane.showMessageDialog(null, "Yeah, SPP Siswa berhasil dibayar ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
             
-            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
+            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
             
             JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
@@ -4210,9 +4210,12 @@ public class TPAAzkaAiniya {
             //Get object from column with specific index of result set to array of objects
             for (int i = 0; i < columnCount; i++){
                 row[i] = rs.getObject(i+1);
+                System.out.println("Nilai ResultSet " + rs.getString(i+1) + " ");
+                
             }
             //Now add row to table model with that array of objects as an argument
             tableModel.addRow(row);
+            
         }
         
         
@@ -4229,7 +4232,7 @@ public class TPAAzkaAiniya {
         
         HashMap param = new HashMap();
         param.put("noIndukSiswa", noInduk);
-        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
  
         JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             

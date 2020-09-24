@@ -72,9 +72,9 @@ public final class TentangAplikasi extends javax.swing.JFrame {
      * Creates new form ContactEditor
      */
     public TentangAplikasi() {
-        File urlToPage = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\tentang_aplikasi.html");
-        File urlToPage2 = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\terima_kasih.html");
-        File urlToPage3 = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\ikon_ikon.html");
+        File urlToPage = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\tentang_aplikasi.html");
+        File urlToPage2 = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\terima_kasih.html");
+        File urlToPage3 = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\ikon_ikon.html");
         initComponents();
         showDateAndTime();
 //        jLabel1.setText(username);
@@ -106,9 +106,9 @@ public final class TentangAplikasi extends javax.swing.JFrame {
     
     
     public TentangAplikasi (String username) {
-        File urlToPage = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\tentang_aplikasi.html");
-        File urlToPage2 = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\terima_kasih.html");
-        File urlToPage3 = new File ("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\ikon_ikon.html");
+        File urlToPage = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\tentang_aplikasi.html");
+        File urlToPage2 = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\terima_kasih.html");
+        File urlToPage3 = new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\html\\ikon_ikon.html");
         initComponents();
         showDateAndTime();
         jLabel1.setText(username);
