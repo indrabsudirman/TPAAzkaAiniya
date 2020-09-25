@@ -372,17 +372,17 @@ public final class Laporan extends javax.swing.JFrame {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No Induk", "Nama Lengkap", "Nama Pembelajaran", "SPP/bulan"
+                "No Induk", "Nama Lengkap", "Nama Pembelajaran", "SPP/bulan", "Terakhir Bayar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -390,6 +390,9 @@ public final class Laporan extends javax.swing.JFrame {
             }
         });
         jScrollPane3.setViewportView(jTable3);
+        if (jTable3.getColumnModel().getColumnCount() > 0) {
+            jTable3.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         jPanel25.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -828,7 +831,7 @@ public final class Laporan extends javax.swing.JFrame {
                 break;
             case 2:
                 try {
-                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`,`biayaPembelajaran`  FROM `spp_siswa`";
+                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`,`biayaPembelajaran`, `tanggalPembayaran`  FROM `spp_siswa`";
                     connectionDatabase.connect();
                     Statement stat = connectionDatabase.connect().createStatement();
                     ResultSet rs = stat.executeQuery(query);

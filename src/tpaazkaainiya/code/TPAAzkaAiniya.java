@@ -4198,9 +4198,9 @@ public class TPAAzkaAiniya {
         int columnCount = metaData.getColumnCount();
 
         //Get all column names from meta data and add columns to table model
-        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
-            tableModel.addColumn(metaData.getColumnLabel(columnIndex));
-        }
+//        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
+//            tableModel.addColumn(metaData.getColumnLabel(columnIndex));
+//        }
 
         //Create array of Objects with size of column count from meta data
         Object[] row = new Object[columnCount];
@@ -4232,7 +4232,7 @@ public class TPAAzkaAiniya {
         
         HashMap param = new HashMap();
         param.put("noIndukSiswa", noInduk);
-        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DaftarPembelajaran.jrxml");
  
         JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
