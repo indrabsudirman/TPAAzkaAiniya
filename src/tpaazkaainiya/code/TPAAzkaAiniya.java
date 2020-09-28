@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,6 +92,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -4146,42 +4148,6 @@ public class TPAAzkaAiniya {
 
     }
     
-    public void tabelLaporanDataSiswa(JTable table, String query) throws SQLException {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        try {
-            
-            connectionDatabase.connect();
-            Statement stat = connectionDatabase.connect().createStatement();
-            ResultSet rs = stat.executeQuery(query);
-//            String sqlQuery = "SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `namaAyah`, `namaIbu`, `alamatLengkap` FROM `siswa`";
-//            preparedStatement = connectionDatabase.connection.prepareStatement(query);
-//            resultSet = preparedStatement.executeQuery();
-            
-            //To remove previously added rows
-            while (table.getRowCount() > 0) {
-                model.removeRow(0);
-            }
-            
-            
-            
-            int columns = rs.getMetaData().getColumnCount();
-            while (rs.next()) {
-                Object [] row = new Object[columns];
-                for (int i = 1; i< columns; i++) {
-                    row[i - 1] = rs.getObject(i);
-                }
-//                model.setDataVector(dataVector, row);
-                model.insertRow(resultSet.getRow()-1,row);
-            }
-            
-            rs.close();
-            stat.close();
-            connectionDatabase.connect().close();
-        } catch (SQLException e) {
-        }
-        
-    }
-    
     public void resultSetToTableModel(ResultSet rs, JTable table) throws SQLException{
         //Create new table model
         DefaultTableModel tableModel = new DefaultTableModel(){
@@ -4198,9 +4164,9 @@ public class TPAAzkaAiniya {
         int columnCount = metaData.getColumnCount();
 
         //Get all column names from meta data and add columns to table model
-//        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
-//            tableModel.addColumn(metaData.getColumnLabel(columnIndex));
-//        }
+        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
+            tableModel.addColumn(metaData.getColumnLabel(columnIndex));
+        }
 
         //Create array of Objects with size of column count from meta data
         Object[] row = new Object[columnCount];
@@ -4232,12 +4198,117 @@ public class TPAAzkaAiniya {
         
         HashMap param = new HashMap();
         param.put("noIndukSiswa", noInduk);
-        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DaftarPembelajaran.jrxml");
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
  
         JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
         JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
         JasperViewer.viewReport(jPrint, false);
     }
+   
+    
+    public class SiswaTableModel extends AbstractTableModel {
+        private List <SiswaTPA> siswaTPA;
+        
+        public SiswaTableModel (List<SiswaTPA> siswaTPA) {
+            this.siswaTPA = new ArrayList<> (siswaTPA);
+        }
+
+        @Override
+        public int getRowCount() {
+            return siswaTPA.size();
+        }
+        
+        @Override
+        public String getColumnName (int column) {
+            String name = null;
+            switch (column) {
+                case 0:
+                    name = "<html><b>No Induk</b></html>";//<html><b>No Induk</b></html>
+                    break;
+                case 1:
+                    name = "<html><b>Nama Lengkap</b></html>";
+                    break;
+                case 2:
+                    name = "<html><b>Jenis Kelamin</b></html>";
+                    break;
+                case 3:
+                    name = "<html><b>Tempat Lahir</b></html>";
+                    break;
+                case 4:
+                    name = "<html><b>Tanggal Lahir</b></html>";
+                    break;
+                case 5:
+                    name = "<html><b>Ayah</b></html>";
+                    break;
+                case 6:
+                    name = "<html><b>Ibu</b></html>";
+                    break;
+            }
+            
+            return name;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 7;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            SiswaTPA siswaTpa = siswaTPA.get(rowIndex);
+            Object value = null;
+            switch (columnIndex) {      
+                case 0:
+                    value = siswaTpa.getNoInduk();
+                    break;
+                case 1:
+                    value = siswaTpa.getNama();
+                    break;
+                case 2:
+                    value = siswaTpa.getJenisKelamin();
+                    break;
+                case 3:
+                    value = siswaTpa.getTempatLahir();
+                    break;
+                case 4:
+                    value = new SimpleDateFormat("dd MMMMM yyyy",new java.util.Locale("id")).format(siswaTpa.getTanggalLahir());
+                    break;
+                case 5:
+                    value = siswaTpa.getNamaAyah();
+                    break;
+                case 6:
+                    value = siswaTpa.getNamaIbu();
+                    break;
+            }
+            return value;
+        }
+    }
+    
+    public SiswaTableModel getEmployeeTableModel() throws SQLException {
+    connectionDatabase.connect();
+    SiswaTableModel model = null;
+    try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `namaAyah`, `namaIbu`  FROM `siswa`")) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
+            while (rs.next()) {
+//                SiswaTPA employee = new SiswaTPA();
+                SiswaTPA siswaTPA = new SiswaTPA(rs.getString(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getString(4),
+                rs.getDate(5),
+                rs.getString(6),
+                rs.getString(7));
+                daftarSiswa.add(siswaTPA);
+            }
+            model = new SiswaTableModel(daftarSiswa);
+        }
+    }
+    return model;
+    
+    }
+    
+    
 
 }
