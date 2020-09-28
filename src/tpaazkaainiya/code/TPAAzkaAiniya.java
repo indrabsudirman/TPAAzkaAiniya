@@ -106,6 +106,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import org.apache.commons.io.FileUtils;
 import tpaazkaainiya.Laporan;
+import static tpaazkaainiya.Laporan.jTabbedPane1;
 import tpaazkaainiya.Login;
 import tpaazkaainiya.Pembelajaran;
 import tpaazkaainiya.SPP;
@@ -4136,7 +4137,7 @@ public class TPAAzkaAiniya {
 
             JOptionPane.showMessageDialog(null, "Yeah, SPP Siswa berhasil dibayar ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
             
-            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
+            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
             
             JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
@@ -4198,7 +4199,7 @@ public class TPAAzkaAiniya {
         
         HashMap param = new HashMap();
         param.put("noIndukSiswa", noInduk);
-        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
  
         JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
@@ -4222,7 +4223,8 @@ public class TPAAzkaAiniya {
         @Override
         public String getColumnName (int column) {
             String name = null;
-            switch (column) {
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                switch (column) {
                 case 0:
                     name = "<html><b>No Induk</b></html>";//<html><b>No Induk</b></html>
                     break;
@@ -4244,21 +4246,60 @@ public class TPAAzkaAiniya {
                 case 6:
                     name = "<html><b>Ibu</b></html>";
                     break;
-            }
-            
+                    }
+                } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                    switch (column) {
+                case 0:
+                    name = "<html><b>No Induk</b></html>";//<html><b>No Induk</b></html>
+                    break;
+                case 1:
+                    name = "<html><b>Nama Lengkap</b></html>";
+                    break;
+                case 2:
+                    name = "<html><b>Nama Pembelajaran</b></html>";
+                    break;
+                    }
+                } else if (jTabbedPane1.getSelectedIndex() == 2) {
+                    switch (column) {
+                case 0:
+                    name = "<html><b>No Induk</b></html>";//<html><b>No Induk</b></html>
+                    break;
+                case 1:
+                    name = "<html><b>Nama Lengkap</b></html>";
+                    break;
+                case 2:
+                    name = "<html><b>Nama Pembelajaran</b></html>";
+                    break;
+                case 3:
+                    name = "<html><b>Biaya Pembelajaran/bln</b></html>";
+                    break;
+                case 4:
+                    name = "<html><b>Tanggal Terakhir Pembayaran</b></html>";
+                    break;                              
+                    }
+                }           
             return name;
         }
 
         @Override
         public int getColumnCount() {
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                return 7;
+            } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                return 3;
+            } else if (jTabbedPane1.getSelectedIndex() == 2) {
+                return 5;
+            }
             return 7;
+            
         }
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             SiswaTPA siswaTpa = siswaTPA.get(rowIndex);
             Object value = null;
-            switch (columnIndex) {      
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                switch (columnIndex) {      
                 case 0:
                     value = siswaTpa.getNoInduk();
                     break;
@@ -4279,7 +4320,38 @@ public class TPAAzkaAiniya {
                     break;
                 case 6:
                     value = siswaTpa.getNamaIbu();
+                    break; 
+                    }                            
+            } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                switch (columnIndex) {      
+                case 0:
+                    value = siswaTpa.getNoInduk();
                     break;
+                case 1:
+                    value = siswaTpa.getNama();
+                    break;
+                case 2:
+                    value = siswaTpa.getNamaPembelajaran();
+                    break;
+                }
+            } else if (jTabbedPane1.getSelectedIndex() == 2) {
+                switch (columnIndex) {      
+                case 0:
+                    value = siswaTpa.getNoInduk();
+                    break;
+                case 1:
+                    value = siswaTpa.getNama();
+                    break;
+                case 2:
+                    value = siswaTpa.getNamaPembelajaran();
+                    break;
+                case 3:
+                    value = siswaTpa.getBiayaPembelajaran();
+                    break;
+                case 4:
+                    value = new SimpleDateFormat("dd MMMMM yyyy",new java.util.Locale("id")).format(siswaTpa.getTanggalTerakhirPembayaran());
+                    break;
+                }
             }
             return value;
         }
@@ -4288,7 +4360,8 @@ public class TPAAzkaAiniya {
     public SiswaTableModel getEmployeeTableModel() throws SQLException {
     connectionDatabase.connect();
     SiswaTableModel model = null;
-    try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `namaAyah`, `namaIbu`  FROM `siswa`")) {
+    if (jTabbedPane1.getSelectedIndex() == 0) {
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `namaAyah`, `namaIbu`  FROM `siswa`")) {
         try (ResultSet rs = stmt.executeQuery()) {
             List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
             while (rs.next()) {
@@ -4303,8 +4376,40 @@ public class TPAAzkaAiniya {
                 daftarSiswa.add(siswaTPA);
             }
             model = new SiswaTableModel(daftarSiswa);
+            }
         }
-    }
+        
+    } else if (jTabbedPane1.getSelectedIndex() == 1) {
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`  FROM `pembelajaran_siswa`")) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
+            while (rs.next()) {
+//                SiswaTPA employee = new SiswaTPA();
+                SiswaTPA siswaTPA = new SiswaTPA(rs.getString(1),
+                rs.getString(2),
+                rs.getString(3));
+                daftarSiswa.add(siswaTPA);
+            }
+            model = new SiswaTableModel(daftarSiswa);
+            }
+        }
+        } else if (jTabbedPane1.getSelectedIndex() == 2) {
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`,`biayaPembelajaran`, `tanggalPembayaran`  FROM `spp_siswa`")) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
+            while (rs.next()) {
+//                SiswaTPA employee = new SiswaTPA();
+                SiswaTPA siswaTPA = new SiswaTPA(rs.getString(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getDouble(4),
+                rs.getDate(5)); 
+                daftarSiswa.add(siswaTPA);
+            }
+            model = new SiswaTableModel(daftarSiswa);
+            }
+        }
+        }
     return model;
     
     }

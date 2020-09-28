@@ -89,7 +89,7 @@ Gunung Sindur Kab. Bogor
 			</staticText>
 			<image>
 				<reportElement x="364" y="4" width="173" height="113" uuid="a08b6359-9044-4683-b4e0-aef65184ca81"/>
-				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -100,7 +100,7 @@ Gunung Sindur Kab. Bogor
 		<band height="608" splitType="Stretch">
 			<image>
 				<reportElement x="153" y="251" width="384" height="39" uuid="f8d12ca0-1b46-4d82-aa69-7bd2e7979b84"/>
-				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Column header" x="192" y="7" width="173" height="24" forecolor="#000000" uuid="e9f9586d-efbb-4792-ae61-e050d9be3720"/>

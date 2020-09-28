@@ -75,7 +75,7 @@ Gunung Sindur Kab. Bogor
 			</staticText>
 			<image>
 				<reportElement x="380" y="4" width="173" height="113" uuid="a08b6359-9044-4683-b4e0-aef65184ca81"/>
-				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

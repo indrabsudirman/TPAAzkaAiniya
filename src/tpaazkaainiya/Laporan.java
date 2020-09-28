@@ -20,6 +20,7 @@
 package tpaazkaainiya;
 
 import static java.awt.Color.black;
+import java.awt.Component;
 import tpaazkaainiya.code.BuzzActionListener;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -836,25 +838,52 @@ public final class Laporan extends javax.swing.JFrame {
             case 1:
                 System.out.println("Tab Laporan Pembelajaran");
                 try {
-                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`  FROM `pembelajaran_siswa`";
-                    connectionDatabase.connect();
-                    Statement stat = connectionDatabase.connect().createStatement();
-                    ResultSet rs = stat.executeQuery(query);
-                    tpaAzkaAiniya.resultSetToTableModel(rs, jTable2);
-                } catch (SQLException ex) {
-                    Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                                        
+                    Laporan.jTable2.setModel(tpaAzkaAiniya.getEmployeeTableModel());
+                    ((JLabel) Laporan.jTable2.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+                    DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                        super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+                        setHorizontalAlignment(JLabel.CENTER);
+                        return this;
+                        }
+                    };
+                                        
+                    Laporan.jTable2.getColumnModel().getColumn(0).setCellRenderer(centerRender);
+                    Laporan.jTable2.getColumnModel().getColumn(1).setCellRenderer(centerRender);
+                    Laporan.jTable2.getColumnModel().getColumn(2).setCellRenderer(centerRender);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                 break;
             case 2:
+                System.out.println("Tab Laporan SPP");
                 try {
-                    String query = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`,`biayaPembelajaran`, `tanggalPembayaran`  FROM `spp_siswa`";
-                    connectionDatabase.connect();
-                    Statement stat = connectionDatabase.connect().createStatement();
-                    ResultSet rs = stat.executeQuery(query);
-                    tpaAzkaAiniya.resultSetToTableModel(rs, jTable3);
-                } catch (SQLException ex) {
-                    Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                                        
+                    Laporan.jTable3.setModel(tpaAzkaAiniya.getEmployeeTableModel());
+                    ((JLabel) Laporan.jTable3.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+                    DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                        super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+                        setHorizontalAlignment(JLabel.CENTER);
+                        return this;
+                        }
+                    };
+                                        
+                    Laporan.jTable3.getColumnModel().getColumn(0).setCellRenderer(centerRender);
+                    Laporan.jTable3.getColumnModel().getColumn(1).setCellRenderer(centerRender);
+                    Laporan.jTable3.getColumnModel().getColumn(2).setCellRenderer(centerRender);
+                    Laporan.jTable3.getColumnModel().getColumn(3).setCellRenderer(centerRender);
+                    Laporan.jTable3.getColumnModel().getColumn(4).setCellRenderer(centerRender);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                 break;
             default:
                 break;
@@ -2977,10 +3006,10 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    public static javax.swing.JTabbedPane jTabbedPane1;
     public static javax.swing.JTable jTable1;
     public static javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
+    public static javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 
     private void showDateAndTime() {

@@ -622,12 +622,6 @@ public class MenuUtama extends javax.swing.JFrame {
         
         this.dispose();
        try {
-//           String query = "SELECT `noInduk`, `namaLengkap`, `jenisKelamin`, `tempatLahir`, `tanggalLahir`, `namaAyah`, `namaIbu`  FROM `siswa`";
-//           connectionDatabase.connect();
-//           Statement stat = connectionDatabase.connect().createStatement();
-//           ResultSet rs = stat.executeQuery(query);
-//           tpaAzkaAiniya.DataFromDataBaseLat1();
-            
             Laporan.jTable1.setModel(tpaAzkaAiniya.getEmployeeTableModel());
             ((JLabel) Laporan.jTable1.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
             DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer() {
@@ -651,13 +645,6 @@ public class MenuUtama extends javax.swing.JFrame {
        } catch (SQLException ex) {
            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
        }
-            
-//        try {
-//            DefaultTableModel tableModel = new DefaultTableModel();
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }//GEN-LAST:event_jButton4ActionPerformed
     AksesCepat aksesCepat = new AksesCepat();
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

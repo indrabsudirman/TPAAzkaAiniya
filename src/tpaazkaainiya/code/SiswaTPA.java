@@ -21,12 +21,32 @@ public class SiswaTPA {
     private String namaAyah;
     private String namaIbu;
     private String alamat;
+    private String namaPembelajaran;
+    private Double biayaPembelajaran;
+    private Date tanggalTerakhirPembayaran;
+
+    
 
     public SiswaTPA() {
         
         //default constructor
     }
 
+    public SiswaTPA(String noInduk, String nama, String namaPembelajaran) {
+        this.noInduk = noInduk;
+        this.nama = nama;
+        this.namaPembelajaran = namaPembelajaran;
+    }  
+
+    public SiswaTPA(String noInduk, String nama, String namaPembelajaran, Double biayaPembelajaran, Date tanggalTerakhirPembayaran) {
+        this.noInduk = noInduk;
+        this.nama = nama;
+        this.namaPembelajaran = namaPembelajaran;
+        this.biayaPembelajaran = biayaPembelajaran;
+        this.tanggalTerakhirPembayaran = tanggalTerakhirPembayaran;
+    }
+    
+    
     public SiswaTPA(String noInduk, String nama, String jenisKelamin, String tempatLahir, Date tanggalLahir, String namaAyah, String namaIbu) {
         this.noInduk = noInduk;
         this.nama = nama;
@@ -114,5 +134,27 @@ public class SiswaTPA {
         this.alamat = alamat;
     }
     
+    public String getNamaPembelajaran() {
+        return namaPembelajaran;
+    }
+
+    public void setNamaPembelajaran(String namaPembelajaran) {
+        this.namaPembelajaran = namaPembelajaran;
+    } 
+    public Double getBiayaPembelajaran() {
+        return biayaPembelajaran;
+    }
+
+    public void setBiayaPembelajaran(Double biayaPembelajaran) {
+        this.biayaPembelajaran = biayaPembelajaran;
+    }
+
+    public Date getTanggalTerakhirPembayaran() {
+        return tanggalTerakhirPembayaran;
+    }
+
+    public void setTanggalTerakhirPembayaran(Date tanggalTerakhirPembayaran) {
+        this.tanggalTerakhirPembayaran = tanggalTerakhirPembayaran;
+    }
         
 }
