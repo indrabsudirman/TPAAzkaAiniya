@@ -32,7 +32,7 @@
 		<band height="650" splitType="Stretch">
 			<image>
 				<reportElement x="164" y="342" width="384" height="39" uuid="ce2f7058-fcde-4937-b2e8-7a3e15467301"/>
-				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
 			</image>
 		</band>
 	</background>
@@ -70,7 +70,7 @@ Gunung Sindur Kab. Bogor
 			</staticText>
 			<image>
 				<reportElement x="380" y="4" width="173" height="113" uuid="a08b6359-9044-4683-b4e0-aef65184ca81"/>
-				<imageExpression><![CDATA["C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Column header" x="409" y="11" width="113" height="18" forecolor="#000000" uuid="5ee98684-e5fd-4e4f-aec5-f184c37efc07"/>

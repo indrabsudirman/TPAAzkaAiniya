@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b25e3904-21ff-465a-b792-0c484163ac5f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="136"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#C4C489">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#E6E6CF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#F8F8F3"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="New Dataset 1" uuid="97757f96-ab6d-46a7-acb6-6f54877ad080">
+		<queryString language="SQL">
+			<![CDATA[SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`, `halamanPembelajaran`, `nilaiPembelajaran`, `catatanPembelajaran`, `tanggalPembelajaran` FROM `pembelajaran_siswa`]]>
+		</queryString>
+		<field name="noInduk" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="namaLengkap" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="namaPembelajaran" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="halamanPembelajaran" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="nilaiPembelajaran" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="catatanPembelajaran" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="tanggalPembelajaran" class="java.sql.Timestamp">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<group name="noInduk">
+			<groupExpression><![CDATA[$F{noInduk}]]></groupExpression>
+		</group>
+	</subDataset>
+	<queryString>
+		<![CDATA[SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`, `halamanPembelajaran`, `nilaiPembelajaran`, `catatanPembelajaran`, `tanggalPembelajaran` FROM `pembelajaran_siswa`]]>
+	</queryString>
+	<field name="noInduk" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaLengkap" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="namaPembelajaran" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="halamanPembelajaran" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nilaiPembelajaran" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="catatanPembelajaran" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tanggalPembelajaran" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band height="555" splitType="Stretch">
+			<image>
+				<reportElement x="292" y="397" width="384" height="39" uuid="381192c5-867e-44e0-9149-101af274903d"/>
+				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\motoOpacity69.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="152" splitType="Stretch">
+			<image>
+				<reportElement x="487" y="10" width="263" height="129" uuid="b9c9739c-47fb-4783-b2d5-9f281229a318"/>
+				<imageExpression><![CDATA["C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\image\\LogoTPAAzkaAiniya.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="174" y="10" width="219" height="24" uuid="3a0b55f6-1e07-447e-9dba-6cbf64bd203a"/>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Taman Pendidikan Al-Qur'an (TPA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="212" y="39" width="127" height="41" uuid="553f0ee1-5a60-42aa-b0de-d2dd727d53d2"/>
+				<textElement>
+					<font fontName="Impact" size="26" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Azka Ainiya]]></text>
+			</staticText>
+			<line>
+				<reportElement x="6" y="147" width="791" height="1" uuid="dd7da501-6aa8-4699-afb5-21a1ac2ba761"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="127" y="83" width="291" height="53" uuid="5b07f4e5-af80-4fd2-8edf-0fa111d1d708"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Perumahan Griya Indah Serpong Blok O5/14
+Gunung Sindur Kab. Bogor
+0813 8020 0451
+]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="118" splitType="Stretch">
+			<staticText>
+				<reportElement x="292" y="10" width="219" height="24" uuid="a9e28ee8-3b6b-46dd-9e6a-d615b08c9041"/>
+				<textElement>
+					<font fontName="Calibri" size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Laporan Pembelajaran Siswa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="34" width="59" height="20" uuid="bbf187cd-b375-4cda-9505-0faa1f4deadf"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[No Induk]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="60" width="59" height="20" uuid="9bb54f98-9617-49dd-9785-72e4c408da48"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nama]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="91" width="123" height="20" uuid="d64dfb48-d903-4d0e-bbb1-832adeb0c047"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nama Pembelajaran]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="138" y="34" width="12" height="20" uuid="5807aad7-d45c-4848-bad3-31fb95399e75"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="138" y="60" width="12" height="20" uuid="805c6b29-7982-446e-aadb-e02bd664b60e"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="138" y="91" width="12" height="20" uuid="b8fcdaff-9d71-4140-853f-083668f56e6e"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="15" y="4" width="23" height="20" uuid="9a07e36c-64ba-4c8e-b14a-b384f63f67f3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="4" width="53" height="20" uuid="2d807d51-beee-4052-ba3d-8a6d3e252e02"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tanggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="174" y="4" width="53" height="20" uuid="61d25391-bd17-4bba-a42d-542101636b5d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Halaman]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="4" width="70" height="20" uuid="846f9715-07ef-42ef-a8d9-cbd1e9b8d4b7"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Aspek Nilai]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="655" y="4" width="53" height="20" uuid="0432eb13-3957-41d2-a6f8-53a05ea93ebf"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Catatan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="41" width="23" height="20" uuid="83c6bc43-b889-47d9-83d8-a1e6f8ab7693"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="41" width="23" height="20" uuid="0ea65ba2-8758-478f-a6e9-9e92ecc08307"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="41" width="23" height="20" uuid="0cffbcff-8100-4b45-aaf6-a3759538656f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="397" y="41" width="23" height="20" uuid="e7fed93c-4734-45d0-ae3d-14574158c2b6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="424" y="41" width="23" height="20" uuid="e0b89a84-3737-41fa-b81e-37013d601be6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="451" y="41" width="23" height="20" uuid="c4971d9e-0645-4859-b521-7f1773ed1f0e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="477" y="41" width="23" height="20" uuid="1d60b823-0707-40f5-85cb-5ea500561f58"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="503" y="41" width="23" height="20" uuid="fae77d03-23aa-4c86-8d52-3a186e4a54a2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[8]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
