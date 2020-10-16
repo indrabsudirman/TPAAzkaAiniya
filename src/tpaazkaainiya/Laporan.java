@@ -24,10 +24,12 @@ import java.awt.Component;
 import tpaazkaainiya.code.BuzzActionListener;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -132,6 +134,13 @@ public final class Laporan extends javax.swing.JFrame {
         jButton10 = new javax.swing.JButton();
         jPanel26 = new javax.swing.JPanel();
         jButton11 = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable4 = new javax.swing.JTable();
+        jPanel27 = new javax.swing.JPanel();
+        jButton12 = new javax.swing.JButton();
+        jPanel28 = new javax.swing.JPanel();
+        jButton13 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -383,7 +392,7 @@ public final class Laporan extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("<html><p style=\"text-align: center; width: 100px\"><b>Laporan Pembelajaran</b></p></html>", new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/report_icon_blue.png")), jPanel8); // NOI18N
+        jTabbedPane1.addTab("<html><p style=\"text-align: center; width: 100px\"><b>Laporan Pembelajaran Siswa</b></p></html>", new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/report_icon_blue.png")), jPanel8); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -409,7 +418,8 @@ public final class Laporan extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jTable3);
         if (jTable3.getColumnModel().getColumnCount() > 0) {
-            jTable3.getColumnModel().getColumn(4).setResizable(false);
+            jTable3.getColumnModel().getColumn(2).setHeaderValue("Deskripsi Pembelajaran");
+            jTable3.getColumnModel().getColumn(4).setHeaderValue("Terakhir Bayar");
         }
 
         jPanel25.setBackground(new java.awt.Color(255, 255, 255));
@@ -495,6 +505,114 @@ public final class Laporan extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("<html><p style=\"text-align: center; width: 100px\"><b>Laporan SPP</b></p></html>", new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/report_icon_blue.png")), jPanel9); // NOI18N
+
+        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel10.setForeground(new java.awt.Color(255, 255, 255));
+
+        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Kode Pembelajaran", "Nama Pembelajaran", "Biaya Pembelajaran"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(jTable4);
+
+        jPanel27.setBackground(new java.awt.Color(255, 255, 255));
+
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/print.png"))); // NOI18N
+        jButton12.setText("Cetak");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
+        jPanel27.setLayout(jPanel27Layout);
+        jPanel27Layout.setHorizontalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel27Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel27Layout.setVerticalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel27Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel28.setBackground(new java.awt.Color(255, 255, 255));
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/pembayaran_icon.png"))); // NOI18N
+        jButton13.setText("Refresh");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
+        jPanel28.setLayout(jPanel28Layout);
+        jPanel28Layout.setHorizontalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel28Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel28Layout.setVerticalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel28Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 933, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(221, 221, 221)
+                        .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(201, 201, 201)
+                        .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("<html><p style=\"text-align: center; width: 100px\"><b>Laporan Daftar Pembelajaran</b></p></html>", new javax.swing.ImageIcon(getClass().getResource("/tpaazkaainiya/image/report_icon_blue.png")), jPanel10); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -792,15 +910,28 @@ public final class Laporan extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.cetakPembelajaranSiswa();
+        } catch (SQLException | FileNotFoundException | JRException ex) {
+            Logger.getLogger(Laporan.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.cetakPembelajaranSiswa();
+        } catch (SQLException | FileNotFoundException | JRException ex) {
+            Logger.getLogger(Laporan.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        LocalDate localDate = LocalDate.now();  
+        System.out.println("Tahun sekarang adalah : "+localDate.getYear());
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -885,10 +1016,49 @@ public final class Laporan extends javax.swing.JFrame {
                         Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
                         }
                 break;
+                case 3:
+                System.out.println("Tab Daftar Pembelajaran");
+                try {
+                                        
+                    Laporan.jTable4.setModel(tpaAzkaAiniya.getEmployeeTableModel());
+                    ((JLabel) Laporan.jTable4.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+                    DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                        super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+                        setHorizontalAlignment(JLabel.CENTER);
+                        return this;
+                        }
+                    };
+                                        
+                    Laporan.jTable4.getColumnModel().getColumn(0).setCellRenderer(centerRender);
+                    Laporan.jTable4.getColumnModel().getColumn(1).setCellRenderer(centerRender);
+                    Laporan.jTable4.getColumnModel().getColumn(2).setCellRenderer(centerRender);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                break;
             default:
                 break;
         }
     }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+         try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.cetakDaftarPembelajaran();
+        } catch (SQLException | JRException ex) {
+            Logger.getLogger(Laporan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -2976,6 +3146,8 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     public static javax.swing.JButton jButton10;
     public static javax.swing.JButton jButton11;
+    public static javax.swing.JButton jButton12;
+    public static javax.swing.JButton jButton13;
     public static javax.swing.JButton jButton6;
     public static javax.swing.JButton jButton7;
     public static javax.swing.JButton jButton8;
@@ -2986,6 +3158,7 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
@@ -2996,6 +3169,8 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -3006,10 +3181,12 @@ public final class Laporan extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTabbedPane jTabbedPane1;
     public static javax.swing.JTable jTable1;
     public static javax.swing.JTable jTable2;
     public static javax.swing.JTable jTable3;
+    public static javax.swing.JTable jTable4;
     // End of variables declaration//GEN-END:variables
 
     private void showDateAndTime() {

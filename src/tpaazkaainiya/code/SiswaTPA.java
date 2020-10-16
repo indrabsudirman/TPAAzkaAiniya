@@ -24,9 +24,35 @@ public class SiswaTPA {
     private String namaPembelajaran;
     private Double biayaPembelajaran;
     private Date tanggalTerakhirPembayaran;
+    private Double nilaiRataRata;
+    private Date tanggalPembelajaran;
+    private String halamanPembelajaran;
+    private int aspekNilai1;
+    private int aspekNilai2;
+    private int aspekNilai3;
+    private int aspekNilai4;
+    private int aspekNilai5;
+    private int aspekNilai6;
+    private int aspekNilai7;
+    private int aspekNilai8;
+    private String rataRata;
+    private String keterangan;
+    private String totalSPP;
+    private String kodePembelajaran;
+    private String deskripsiPembelajaran;
+
+   
+
+    //Constructor untuk tabel daftar pembelajaran siswa
+    public SiswaTPA(String kodePembelajaran, String namaPembelajaran, Double biayaPembelajaran) {
+        this.namaPembelajaran = namaPembelajaran;
+        this.biayaPembelajaran = biayaPembelajaran;
+        this.kodePembelajaran = kodePembelajaran;
+    }
 
     
 
+    
     public SiswaTPA() {
         
         //default constructor
@@ -156,5 +182,132 @@ public class SiswaTPA {
     public void setTanggalTerakhirPembayaran(Date tanggalTerakhirPembayaran) {
         this.tanggalTerakhirPembayaran = tanggalTerakhirPembayaran;
     }
-        
+    
+    public Double getNilaiRataRata() {
+        return nilaiRataRata;
+    }
+
+    public void setNilaiRataRata(Double nilaiRataRata) {
+        this.nilaiRataRata = nilaiRataRata;
+    }  
+    
+    public Date getTanggalPembelajaran() {
+        return tanggalPembelajaran;
+    }
+
+    public void setTanggalPembelajaran(Date tanggalPembelajaran) {
+        this.tanggalPembelajaran = tanggalPembelajaran;
+    }
+
+    public String getHalamanPembelajaran() {
+        return halamanPembelajaran;
+    }
+
+    public void setHalamanPembelajaran(String halamanPembelajaran) {
+        this.halamanPembelajaran = halamanPembelajaran;
+    }
+
+    public int getAspekNilai1() {
+        return aspekNilai1;
+    }
+
+    public void setAspekNilai1(int aspekNilai1) {
+        this.aspekNilai1 = aspekNilai1;
+    }
+
+    public int getAspekNilai2() {
+        return aspekNilai2;
+    }
+
+    public void setAspekNilai2(int aspekNilai2) {
+        this.aspekNilai2 = aspekNilai2;
+    }
+
+    public int getAspekNilai3() {
+        return aspekNilai3;
+    }
+
+    public void setAspekNilai3(int aspekNilai3) {
+        this.aspekNilai3 = aspekNilai3;
+    }
+
+    public int getAspekNilai4() {
+        return aspekNilai4;
+    }
+
+    public void setAspekNilai4(int aspekNilai4) {
+        this.aspekNilai4 = aspekNilai4;
+    }
+
+    public int getAspekNilai5() {
+        return aspekNilai5;
+    }
+
+    public void setAspekNilai5(int aspekNilai5) {
+        this.aspekNilai5 = aspekNilai5;
+    }
+
+    public int getAspekNilai6() {
+        return aspekNilai6;
+    }
+
+    public void setAspekNilai6(int aspekNilai6) {
+        this.aspekNilai6 = aspekNilai6;
+    }
+
+    public int getAspekNilai7() {
+        return aspekNilai7;
+    }
+
+    public void setAspekNilai7(int aspekNilai7) {
+        this.aspekNilai7 = aspekNilai7;
+    }
+
+    public int getAspekNilai8() {
+        return aspekNilai8;
+    }
+
+    public void setAspekNilai8(int aspekNilai8) {
+        this.aspekNilai8 = aspekNilai8;
+    }
+
+    public String getRataRata() {
+        return rataRata;
+    }
+
+    public void setRataRata(String rataRata) {
+        this.rataRata = rataRata;
+    }
+
+    public String getKeterangan() {
+        return keterangan;
+    }
+
+    public void setKeterangan(String keterangan) {
+        this.keterangan = keterangan;
+    }
+    
+    public String getTotalSPP() {
+        return totalSPP;
+    }
+
+    public void setTotalSPP(String totalSPP) {
+        this.totalSPP = totalSPP;
+    }
+    
+     public String getKodePembelajaran() {
+        return kodePembelajaran;
+    }
+
+    public void setKodePembelajaran(String kodePembelajaran) {
+        this.kodePembelajaran = kodePembelajaran;
+    }
+
+    public String getDeskripsiPembelajaran() {
+        return deskripsiPembelajaran;
+    }
+
+    public void setDeskripsiPembelajaran(String deskripsiPembelajaran) {
+        this.deskripsiPembelajaran = deskripsiPembelajaran;
+    }
 }

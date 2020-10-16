@@ -36,7 +36,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -50,12 +55,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -96,11 +103,14 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
@@ -115,9 +125,59 @@ import tpaazkaainiya.Siswa;
 
 /**
  *
- * @author Jabrikos
+ * @author WIN 10
  */
 public class TPAAzkaAiniya {
+    
+    private static String noIndukSPP;//, namaSPP, pembelajaranSPP;
+    private static String namaUntukSPP;
+    private static String pembelajaranSPP;
+
+    public static String getNoIndukSPP() {
+        return noIndukSPP;
+    }
+
+    public static void setNoIndukSPP(String noIndukSPP) {
+        TPAAzkaAiniya.noIndukSPP = noIndukSPP;
+    }
+    
+      public static String getNamaUntukSPP() {
+        return namaUntukSPP;
+    }
+
+    public static void setNamaUntukSPP(String namaUntukSPP) {
+        TPAAzkaAiniya.namaUntukSPP = namaUntukSPP;
+    }
+
+    public static String getPembelajaranSPP() {
+        return pembelajaranSPP;
+    }
+
+    public static void setPembelajaranSPP(String pembelajaranSPP) {
+        TPAAzkaAiniya.pembelajaranSPP = pembelajaranSPP;
+    }
+    
+    private SPP spp;
+    private static String nilaiRataFinalShare;
+    private List<String> daftarBulanList;
+
+    public String getNilaiRataFinalShare() {
+        return nilaiRataFinalShare;
+    }
+
+    public void setNilaiRataFinalShare(String nilaiRataFinalShare) {
+        TPAAzkaAiniya.nilaiRataFinalShare = nilaiRataFinalShare;
+    }
+
+    public TPAAzkaAiniya(String nilaiRataFinalShare) {
+        TPAAzkaAiniya.nilaiRataFinalShare = nilaiRataFinalShare;
+    }
+
+    public TPAAzkaAiniya() {
+        //Default Constructor
+    }
+    
+    
 
     private static boolean passwordAdminPassed = false;
 
@@ -224,9 +284,17 @@ public class TPAAzkaAiniya {
     public void setNoInduk(String noInduk) {
         TPAAzkaAiniya.noInduk = noInduk;
     }
-
+    
     double amoun;
-    double amount;
+    public static double amount;
+
+    public static double getAmount() {
+        return amount;
+    }
+
+    public static void setAmount(double amount) {
+        TPAAzkaAiniya.amount = amount;
+    }
     
     NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ID"));
     JTable table;
@@ -1530,21 +1598,6 @@ public class TPAAzkaAiniya {
                     });
                 } while (resultSet.next());
             }
-
-//            while (resultSet.next()) {
-//                kodePembelajaranDB = resultSet.getString("kodePembelajaran");
-//                Pembelajaran.jComboBox3.addItem(kodePembelajaranDB);
-//            }
-//            Pembelajaran.jComboBox3.addItemListener((ItemEvent e) -> {
-//
-//                String pembelajaranKode1 = (String) Pembelajaran.jComboBox3.getSelectedItem();
-//                TPAAzkaAiniya.setPembelajaranKode(pembelajaranKode1);
-//                jTextFieldFromComboBox();
-//                Pembelajaran.jTextField20.setText(TPAAzkaAiniya.getPembelajaranNama());
-//                String tampilRupiah = numberFormat.format(new BigDecimal(TPAAzkaAiniya.getPembelajaranBiaya()));
-//                Pembelajaran.jFormattedTextField3.setText(tampilRupiah);
-//            });
-
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -1709,28 +1762,6 @@ public class TPAAzkaAiniya {
   
         return str;
     }
-
-    private static class MyComboBoxRender extends JLabel implements ListCellRenderer {
-
-        private String _title;
-
-        public MyComboBoxRender(String title) {
-            _title = title;
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean hasFocus) {
-            if (index == -1 && value == null) {
-                setText(_title);
-            } else {
-                setText(value.toString());
-            }
-            return this;
-        }
-
-    }
-
     public void comboBoxNamaSiswaInputNilai() throws SQLException {
         try {
 //            connectionDatabase.connect();
@@ -2011,6 +2042,7 @@ public class TPAAzkaAiniya {
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7, aspekNilai8; //Tambah
@@ -2030,7 +2062,9 @@ public class TPAAzkaAiniya {
             }
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata dalam Double " + nilaiRataFinal);
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal)); 
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -2407,12 +2441,10 @@ public class TPAAzkaAiniya {
         panelSemuaSoal.add(panelNilai7, c);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
-
+      
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6, aspekNilai7; //Tambah
@@ -2431,7 +2463,11 @@ public class TPAAzkaAiniya {
             }
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
+            System.out.println("Nilai rata dalam Double " + nilaiRataFinal);
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal)); 
+            System.out.println("");
+            System.out.println("Nilai dari setter " + tpaAzkaAiniyaNilai.getNilaiRataFinalShare());
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -2773,6 +2809,7 @@ public class TPAAzkaAiniya {
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6; //Tambah
@@ -2791,6 +2828,7 @@ public class TPAAzkaAiniya {
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal));
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -3086,13 +3124,10 @@ public class TPAAzkaAiniya {
         c.gridy = 4;
         panelSemuaSoal.add(panelNilai5, c);
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        JOptionPane jp = new JOptionPane(("Session Expired - Please Re Login"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, icon);
-        JDialog dialog = jp.createDialog(null, "Session Expired - Please Re Login");
-        ((Frame) dialog.getParent()).setIconImage(((ImageIcon) icon).getImage());
-
+        
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5;
@@ -3110,6 +3145,7 @@ public class TPAAzkaAiniya {
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal));
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -3375,6 +3411,7 @@ public class TPAAzkaAiniya {
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4;
@@ -3391,6 +3428,7 @@ public class TPAAzkaAiniya {
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal));
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -3603,6 +3641,7 @@ public class TPAAzkaAiniya {
 
         String[] options = new String[]{"Simpan", "Cancel"};
         int option = JOptionPane.showOptionDialog(null, panelSemuaSoal, "Input Nilai", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
         if (option == 0) {
             System.out.println("Anda tekan simpan!");
             int aspekNilai1, aspekNilai2, aspekNilai3;
@@ -3618,6 +3657,7 @@ public class TPAAzkaAiniya {
             DecimalFormat df = new DecimalFormat("####0.00");
             double nilaiRataFinal = nilaiRataDecimal / nilaiRataRata.length;
             System.out.println("Nilai rata-rata adalah " + df.format(nilaiRataFinal));
+            tpaAzkaAiniyaNilai.setNilaiRataFinalShare(df.format(nilaiRataFinal));
             double standarNilaiLulus = 80;
 
             JPanel panelInformasiNilai = getPanel();
@@ -3773,7 +3813,12 @@ public class TPAAzkaAiniya {
                     timestamp = resultSet.getTimestamp("tanggalDaftarPembelajaran");
                     Date date1 = new java.util.Date(timestamp.getTime());
                     Date date = new Date();
-                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, halamanPembelajaran, nilaiPembelajaran, catatanPembelajaran, tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, "
+                            + "kodePembelajaran, namaPembelajaran, halamanPembelajaran,"
+                            + "aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6,"
+                            + "aspekNilai7, aspekNilai8, rataRata, catatanPembelajaran, "
+                            + "tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, "
+                            + "tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 //                    connectionDatabase.connect();
                     preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery1);
                     preparedStatement.setString(1, resultSet.getString("noPembelajaranSiswa"));
@@ -3841,32 +3886,100 @@ public class TPAAzkaAiniya {
                     System.out.println("nilai dari Arraylist "+String.join(" ", nilai));
                     String listNilai = String.join(" ", nilai);
                     
-                    preparedStatement.setString(7, listNilai); //nilai pembelajaran
-                    preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
-                    preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
-                    preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
+                    System.out.println("Nilai Arraylist adalah : " + nilai.size());
                     
-                    preparedStatement.setString(11, resultSet.getString("BiayaPembelajaran"));
-                    preparedStatement.setString(12, resultSet.getString("userMadePembelajaranSiswa"));
-                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
+                    
+                    
+                    
+                    
+                    System.out.println("Nilai 1 " + nilai.get(0)); 
+                    if (levelUntukNilai.equals("Iqra I")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setNull(10, java.sql.Types.NULL);
+                        preparedStatement.setNull(11, java.sql.Types.NULL);
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra II")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setNull(11, java.sql.Types.NULL);
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra III")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra IV")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran  
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra V")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran
+                        preparedStatement.setString(13, nilai.get(6)); //nilai pembelajaran  
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra VI")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran
+                        preparedStatement.setString(13, nilai.get(6)); //nilai pembelajaran
+                        preparedStatement.setString(14, nilai.get(7)); //nilai pembelajaran
+                    }     
+                    TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
+                    System.out.println("Nilai Rata di Prepared Statement " + tpaAzkaAiniyaNilai.getNilaiRataFinalShare());
+                    preparedStatement.setString(15, tpaAzkaAiniyaNilai.getNilaiRataFinalShare()); //nilai rata-rata
+                    preparedStatement.setString(16, catatanPembelajaran); //catatan pembelajaran
+                    preparedStatement.setTimestamp(17, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
+                    preparedStatement.setString(18, Pembelajaran.jLabel1.getText()); //user made nilai
+                    
+                    preparedStatement.setString(19, resultSet.getString("BiayaPembelajaran"));
+                    preparedStatement.setString(20, resultSet.getString("userMadePembelajaranSiswa"));
+                    preparedStatement.setTimestamp(21, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
                     
 //                    preparedStatement.setString(6, (String) Pembelajaran.jComboBox7.getSelectedItem()); //pembelajaran 
                     preparedStatement.executeUpdate();
                     
                 }catch(SQLException e) {
                     JOptionPane.showMessageDialog(null, "Error gagal simpan nilai " + e, "Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Error simpan nilai siswa " + e);
                 }
     }
     
     private void simpanNilaiMengulang() {
         String catatanPembelajaran = "Mengulang";
-                try {                  
+        System.out.println("Di sini nilainya " + TPAAzkaAiniya.getNamaPembelajaranSiswa());
+                try {  
+                    
+                    
                     //Ambil data didatabase dulu
                     
                     java.sql.Timestamp timestamp;
                     String sqlQuery = "SELECT noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran FROM pembelajaran_siswa WHERE noPembelajaranSiswa = ?";
                     preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
-                    preparedStatement.setString(1, TPAAzkaAiniya.getNamaPembelajaranSiswa());
+                    preparedStatement.setString(1, (String) Pembelajaran.jComboBox7.getSelectedItem());
                     resultSet = preparedStatement.executeQuery();
                     
 
@@ -3884,7 +3997,12 @@ public class TPAAzkaAiniya {
                     timestamp = resultSet.getTimestamp("tanggalDaftarPembelajaran");
                     Date date1 = new java.util.Date(timestamp.getTime());
                     Date date = new Date();
-                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, kodePembelajaran, namaPembelajaran, halamanPembelajaran, nilaiPembelajaran, catatanPembelajaran, tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    String sqlQuery1 = "INSERT INTO pembelajaran_siswa (noPembelajaranSiswa, noInduk, namaLengkap, "
+                            + "kodePembelajaran, namaPembelajaran, halamanPembelajaran,"
+                            + "aspekNilai1, aspekNilai2, aspekNilai3, aspekNilai4, aspekNilai5, aspekNilai6,"
+                            + "aspekNilai7, aspekNilai8, rataRata, catatanPembelajaran, "
+                            + "tanggalPembelajaran, userMadeNilaiSiswa, BiayaPembelajaran, userMadePembelajaranSiswa, "
+                            + "tanggalDaftarPembelajaran) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 //                    connectionDatabase.connect();
                     preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery1);
                     preparedStatement.setString(1, resultSet.getString("noPembelajaranSiswa"));
@@ -3952,13 +4070,71 @@ public class TPAAzkaAiniya {
                     System.out.println("nilai dari Arraylist "+String.join(" ", nilai));
                     String listNilai = String.join(" ", nilai);
                     
-                    preparedStatement.setString(7, listNilai); //nilai pembelajaran
-                    preparedStatement.setString(8, catatanPembelajaran); //catatan pembelajaran
-                    preparedStatement.setTimestamp(9, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
-                    preparedStatement.setString(10, Pembelajaran.jLabel1.getText()); //user made nilai
-                    preparedStatement.setString(11, resultSet.getString("BiayaPembelajaran"));
-                    preparedStatement.setString(12, resultSet.getString("userMadePembelajaranSiswa"));
-                    preparedStatement.setTimestamp(13, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
+                    if (levelUntukNilai.equals("Iqra I")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setNull(10, java.sql.Types.NULL);
+                        preparedStatement.setNull(11, java.sql.Types.NULL);
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra II")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setNull(11, java.sql.Types.NULL);
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra III")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setNull(12, java.sql.Types.NULL);
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra IV")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran  
+                        preparedStatement.setNull(13, java.sql.Types.NULL);
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra V")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran
+                        preparedStatement.setString(13, nilai.get(6)); //nilai pembelajaran  
+                        preparedStatement.setNull(14, java.sql.Types.NULL);
+                    } if (levelUntukNilai.equals("Iqra VI")) {
+                        preparedStatement.setString(7, nilai.get(0)); //nilai pembelajaran
+                        preparedStatement.setString(8, nilai.get(1)); //nilai pembelajaran
+                        preparedStatement.setString(9, nilai.get(2)); //nilai pembelajaran
+                        preparedStatement.setString(10, nilai.get(3)); //nilai pembelajaran
+                        preparedStatement.setString(11, nilai.get(4)); //nilai pembelajaran
+                        preparedStatement.setString(12, nilai.get(5)); //nilai pembelajaran
+                        preparedStatement.setString(13, nilai.get(6)); //nilai pembelajaran
+                        preparedStatement.setString(14, nilai.get(7)); //nilai pembelajaran
+                    }     
+                    TPAAzkaAiniya tpaAzkaAiniyaNilai = new TPAAzkaAiniya();
+                    System.out.println("Nilai Rata di Prepared Statement " + tpaAzkaAiniyaNilai.getNilaiRataFinalShare());
+                    preparedStatement.setString(15, tpaAzkaAiniyaNilai.getNilaiRataFinalShare()); //nilai rata-rata
+                    preparedStatement.setString(16, catatanPembelajaran); //catatan pembelajaran
+                    preparedStatement.setTimestamp(17, new java.sql.Timestamp(date.getTime())); //tanggal pembelajaran
+                    preparedStatement.setString(18, Pembelajaran.jLabel1.getText()); //user made nilai
+                    
+                    preparedStatement.setString(19, resultSet.getString("BiayaPembelajaran"));
+                    preparedStatement.setString(20, resultSet.getString("userMadePembelajaranSiswa"));
+                    preparedStatement.setTimestamp(21, new java.sql.Timestamp(date1.getTime())); //tanggal mulai pembelajaran
                     preparedStatement.executeUpdate();
                     
                 }catch(SQLException e) {
@@ -3972,7 +4148,7 @@ public class TPAAzkaAiniya {
         String e = "";
         ArrayList listData = new ArrayList();
         connectionDatabase.connect();
-        String sqlQuery = "SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`, `tanggalDaftarPembelajaran`, `biayaPembelajaran` FROM `pembelajaran_siswa`";
+        String sqlQuery = "SELECT DISTINCT `noInduk`, `namaLengkap`, `namaPembelajaran`, `tanggalDaftarPembelajaran`, `biayaPembelajaran` FROM `pembelajaran_siswa`";
         preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
         resultSet = preparedStatement.executeQuery();
         
@@ -4063,7 +4239,7 @@ public class TPAAzkaAiniya {
                
         panel.add(new JScrollPane(table));
         String[] options = new String[]{"    OK    ", "Cancel"};
-        int option = JOptionPane.showOptionDialog(null, panel, "Pilih Pembelajaran", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        int option = JOptionPane.showOptionDialog(null, panel, "Pilih Nama Siswa", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (option == 0) {
             int row = table.getSelectedRow();
             int column = table.getColumnCount();
@@ -4082,67 +4258,69 @@ public class TPAAzkaAiniya {
 ////            Date date3=formatter3.parse(str[3]);
 //            String strDate = formatter3.format(date3); 
 
+            SiswaTPA siswaTPA = new SiswaTPA();
             amount = Double.parseDouble(str[4]);
+            TPAAzkaAiniya.setAmount(amount); 
             tampilRupiah = numberFormat.format(new BigDecimal(amount));
             String [] tanggalAja = str[3].split(" ");
             SPP.jTextField1.setText(str[0]);
+            TPAAzkaAiniya.setNoIndukSPP(str[0]); 
             SPP.jTextField2 .setText(str[1]);
+            TPAAzkaAiniya.setNamaUntukSPP(str[1]);
             SPP.jTextField3.setText(str[2]);
+            TPAAzkaAiniya.setPembelajaranSPP(str[2]); 
             SPP.jTextField4.setText(tanggalAja[0]); 
             SPP.jTextField5.setText("Rp" +tampilRupiah+",00");
             SPP.jButton2.setEnabled(true);
-            SPP.jTextField9.setText(str[0]);
-            SPP.jTextField10 .setText(str[1]);
+            SPP.jTextField8.setText(str[0]);
+            SPP.jTextField9 .setText(str[1]);
             SPP.jTextField6.setText(str[2]); 
             SPP.jTextField7.setText("Rp" +tampilRupiah+",00");
             
             System.out.println("str[4]" + str[4]);
             
             TPAAzkaAiniya.setPembelajaranBiaya(str[4]); 
-            
-            SPP.jLabel18.setText("Rp" +tampilRupiah+",00");
-            SPP.jSpinner1.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent arg0) {
-                    
-                    int total = (Integer) SPP.jSpinner1.getValue();
-                    amoun = amount * total;
-                    String tampilRupiah = numberFormat.format(new BigDecimal(amoun));
-                    System.out.println("amount "+ "Rp"+tampilRupiah+",00");
-                    SPP.jLabel18.setText("Rp" +tampilRupiah+",00");
-                    
-                    }
-            });
-            } 
+  
+            }
+        
+        
     }
     
+    // = new SPP();
+    public void bayarSPPSiswaBulan() {
+                
+//        ArrayList<String> bulanBayarSpp = (ArrayList<String>) spp.getDaftarBulanList();
+        System.out.println("Bulan yang akan dibayar adalah " + SPP.getDaftarBulanList().toString());
+    
+    
+    }
     
     public void PembayaranSPP() throws JRException {
         try {
+            SPP spp = new SPP();
 
-            String sqlQuery = ("insert into spp_siswa (noInduk, namaLengkap, namaPembelajaran, biayaPembelajaran, banyakSppPerBulan, totalBayar, userMadePembelajaran) values (?, ?, ?, ?, ?, ?, ?)");
+            String sqlQuery = ("insert into spp_siswa (noInduk, namaLengkap, namaPembelajaran, biayaPembelajaran, banyakSppPerBulan, namaBulanDiBayar, totalBayar, userMadePembayaran) values (?, ?, ?, ?, ?, ?, ?, ?)");
             connectionDatabase.connect();
             preparedStatement = connectionDatabase.connection.prepareStatement(sqlQuery);
-            preparedStatement.setString(1, SPP.jTextField9.getText());
-            preparedStatement.setString(2, SPP.jTextField10.getText());
-            preparedStatement.setString(3, SPP.jTextField6.getText());
+            preparedStatement.setString(1, TPAAzkaAiniya.getNoIndukSPP());
+//            System.out.println("No Induk " + SPP.jTextField1.getText());
+            preparedStatement.setString(2, TPAAzkaAiniya.getNamaUntukSPP());
+            preparedStatement.setString(3, TPAAzkaAiniya.getPembelajaranSPP());
             String biayaPembelajaran = TPAAzkaAiniya.getPembelajaranBiaya();
             preparedStatement.setString(4, biayaPembelajaran);
-            int total = (Integer) SPP.jSpinner1.getValue();
-            preparedStatement.setInt(5, total);
-            amoun = amount * total;
-            preparedStatement.setDouble(6, amoun); 
-            preparedStatement.setString(7, SPP.jLabel1.getText());
+            Double totalBayar = SPP.getBayarTagihan();
+            int banyakSPPDibayar = SPP.getDaftarBulanList().size();
+            preparedStatement.setInt(5, banyakSPPDibayar); 
+            String namaBulanDibayar = String.join(", ", SPP.getDaftarBulanList()) + " "+LocalDate.now().getYear();
+            preparedStatement.setString(6, namaBulanDibayar); 
+            preparedStatement.setDouble(7, totalBayar); 
+            preparedStatement.setString(8, SPP.jLabel1.getText());
             preparedStatement.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Yeah, SPP Siswa berhasil dibayar ...", "Berhasil", JOptionPane.INFORMATION_MESSAGE, icon);
             
-            JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
+            buktiBayarSPP();
             
-            JasperReport jReport = JasperCompileManager.compileReport(jDesign);
-            
-            JasperPrint jPrint = JasperFillManager.fillReport(jReport,null ,connectionDatabase.connect());
-            JasperViewer.viewReport(jPrint, false);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error " + e, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -4199,12 +4377,26 @@ public class TPAAzkaAiniya {
         
         HashMap param = new HashMap();
         param.put("noIndukSiswa", noInduk);
-        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Jabrikos\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DataSiswa.jrxml");
  
         JasperReport jReport = JasperCompileManager.compileReport(jDesign);
             
         JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
         JasperViewer.viewReport(jPrint, false);
+    }
+    
+    public void buktiBayarSPP() throws JRException, SQLException {
+        String noInduk = TPAAzkaAiniya.getNoIndukSPP();
+        System.out.println("Nilai nomor Induk Siswa di getNoInduk adalah : " + noInduk);
+        
+        HashMap param = new HashMap();
+        param.put("noIndukSiswa", noInduk);
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\BuktiBayar.jrxml");
+ 
+        JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+            
+        JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
+        JasperViewer.viewReport(jPrint);
     }
    
     
@@ -4277,7 +4469,19 @@ public class TPAAzkaAiniya {
                     name = "<html><b>Tanggal Terakhir Pembayaran</b></html>";
                     break;                              
                     }
-                }           
+                } else if (jTabbedPane1.getSelectedIndex() == 3) {
+                    switch (column) {
+                case 0:
+                    name = "<html><b>Kode Pembelajaran</b></html>";//<html><b>No Induk</b></html>
+                    break;
+                case 1:
+                    name = "<html><b>Nama Pembelajaran</b></html>";
+                    break;
+                case 2:
+                    name = "<html><b>Biaya Pembelajaran/bln</b></html>";
+                    break;                             
+                    }
+                }          
             return name;
         }
 
@@ -4289,6 +4493,8 @@ public class TPAAzkaAiniya {
                 return 3;
             } else if (jTabbedPane1.getSelectedIndex() == 2) {
                 return 5;
+            } else if (jTabbedPane1.getSelectedIndex() == 3) {
+                return 3;
             }
             return 7;
             
@@ -4346,10 +4552,22 @@ public class TPAAzkaAiniya {
                     value = siswaTpa.getNamaPembelajaran();
                     break;
                 case 3:
-                    value = siswaTpa.getBiayaPembelajaran();
+                    value = "Rp"+new java.text.DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(java.util.Locale.GERMANY)).format(siswaTpa.getBiayaPembelajaran());
                     break;
                 case 4:
                     value = new SimpleDateFormat("dd MMMMM yyyy",new java.util.Locale("id")).format(siswaTpa.getTanggalTerakhirPembayaran());
+                    break;
+                }
+            } else if (jTabbedPane1.getSelectedIndex() == 3) {
+                switch (columnIndex) {      
+                case 0:
+                    value = siswaTpa.getKodePembelajaran();
+                    break;
+                case 1:
+                    value = siswaTpa.getNamaPembelajaran();
+                    break;
+                case 2:
+                    value ="Rp"+new java.text.DecimalFormat("#,##0.00", new java.text.DecimalFormatSymbols(java.util.Locale.GERMANY)).format(siswaTpa.getBiayaPembelajaran());//siswaTpa.getBiayaPembelajaran();
                     break;
                 }
             }
@@ -4380,7 +4598,7 @@ public class TPAAzkaAiniya {
         }
         
     } else if (jTabbedPane1.getSelectedIndex() == 1) {
-        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`  FROM `pembelajaran_siswa`")) {
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT DISTINCT `noInduk`, `namaLengkap`, `namaPembelajaran` FROM `pembelajaran_siswa`")) {
         try (ResultSet rs = stmt.executeQuery()) {
             List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
             while (rs.next()) {
@@ -4390,6 +4608,7 @@ public class TPAAzkaAiniya {
                 rs.getString(3));
                 daftarSiswa.add(siswaTPA);
             }
+//            daftarSiswa.get(daftarSiswa.size()-1);
             model = new SiswaTableModel(daftarSiswa);
             }
         }
@@ -4409,9 +4628,106 @@ public class TPAAzkaAiniya {
             model = new SiswaTableModel(daftarSiswa);
             }
         }
+        } else if (jTabbedPane1.getSelectedIndex() == 3) {
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `kodePembelajaran`, `namaPembelajaran`, `biayaPembelajaran`  FROM `pembelajaran`")) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<SiswaTPA> daftarSiswa = new ArrayList<>(25);
+            while (rs.next()) {
+//                SiswaTPA employee = new SiswaTPA();
+                SiswaTPA siswaTPA = new SiswaTPA(rs.getString(1),
+                rs.getString(2),
+                rs.getDouble(3));
+                daftarSiswa.add(siswaTPA);
+            }
+            model = new SiswaTableModel(daftarSiswa);
+            }
+        }
         }
     return model;
     
+    }
+    
+    public void cetakPembelajaranSiswa() throws SQLException, FileNotFoundException, JRException {
+    
+        String outputFile = "Directory output file report .pdf";
+        
+        try (PreparedStatement stmt = connectionDatabase.connect().prepareStatement("SELECT `noInduk`, `namaLengkap`, `namaPembelajaran`, `halamanPembelajaran`,"
+                + " `aspekNilai1`,`aspekNilai2`, `aspekNilai3`, `aspekNilai4`, `aspekNilai5`, `aspekNilai6`, `aspekNilai7`, `aspekNilai8`,\n" +
+                "`rataRata`, `catatanPembelajaran`, `tanggalPembelajaran` FROM `pembelajaran_siswa` WHERE noInduk = '1617 001'")) {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<SiswaTPA> daftarSiswa = new ArrayList<>(50);
+            while (rs.next()) {
+//                SiswaTPA employee = new SiswaTPA();
+                SiswaTPA siswaTPA = new SiswaTPA();
+                siswaTPA.setNoInduk(rs.getString("noInduk"));
+                siswaTPA.setNama(rs.getString("namaLengkap"));
+                siswaTPA.setNamaPembelajaran(rs.getString("namaPembelajaran"));
+                siswaTPA.setHalamanPembelajaran(rs.getString("halamanPembelajaran"));
+                siswaTPA.setAspekNilai1(rs.getInt("aspekNilai1"));
+                siswaTPA.setAspekNilai2(rs.getInt("aspekNilai2"));
+                siswaTPA.setAspekNilai3(rs.getInt("aspekNilai3"));
+                siswaTPA.setAspekNilai4(rs.getInt("aspekNilai4"));
+                siswaTPA.setAspekNilai5(rs.getInt("aspekNilai5"));
+                siswaTPA.setAspekNilai6(rs.getInt("aspekNilai6"));
+                siswaTPA.setAspekNilai7(rs.getInt("aspekNilai7"));
+                siswaTPA.setAspekNilai8(rs.getInt("aspekNilai8"));
+                siswaTPA.setRataRata(rs.getString("rataRata"));
+                siswaTPA.setKeterangan(rs.getString("catatanPembelajaran"));
+                siswaTPA.setTanggalPembelajaran(rs.getDate("tanggalPembelajaran"));
+                //Add item POJO to List
+                daftarSiswa.add(siswaTPA);
+                }
+            //Menghapus index pertama, karena kosong belum ada nilai
+            int indexSatu = 0;
+            daftarSiswa.remove(indexSatu);
+            System.out.println("Elemene " + daftarSiswa.get(0)); 
+                
+                //Convert List to JRBeanCollectionDataSource
+                JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(daftarSiswa);
+                
+                //Map to hold JasperReport Parameter
+                Map<String, Object> parameters = new HashMap <>();
+                parameters.put("CollectionBeanParam",itemsJRBean);
+                
+                //Read jrxml file and creating jasperDesign Object
+                InputStream input = new FileInputStream (new File ("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\JasperLaporanPembelajaranSiswa.jrxml"));
+                
+                    JasperDesign jasperDesign = JRXmlLoader.load(input);
+                
+                //compiling jrxml with help of JasperReport class
+                JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+                
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+                
+                //call jasper engine to dispay report in jasperviewer windows
+                JasperViewer.viewReport(jasperPrint, false);
+                
+                //outputStream to create PDF
+//                OutputStream outputStream = new FileOutputStream (new File (outputFile)); 
+                
+                //Write content to to PDF file
+//                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                
+                System.out.println("File Generated");
+                           
+            }
+        }
+         
+    }
+    
+    public void cetakDaftarPembelajaran() throws JRException, SQLException {
+        TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
+        String noInduk = tpaAzkaAiniya.getNoInduk();
+        System.out.println("Nilai nomor Induk Siswa di getNoInduk adalah : " + tpaAzkaAiniya.getNoInduk());
+        
+        HashMap param = new HashMap();
+        param.put("noIndukSiswa", noInduk);
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\DaftarPembelajaran.jrxml");
+ 
+        JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+            
+        JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
+        JasperViewer.viewReport(jPrint, false);
     }
     
     
