@@ -4730,6 +4730,20 @@ public class TPAAzkaAiniya {
         JasperViewer.viewReport(jPrint, false);
     }
     
+    public void cetakLaporanSPP() throws JRException, SQLException {
+        TPAAzkaAiniya tpaAzkaAiniya = new TPAAzkaAiniya();
+        String noInduk = tpaAzkaAiniya.getNoInduk();
+        System.out.println("Nilai nomor Induk Siswa di getNoInduk adalah : " + tpaAzkaAiniya.getNoInduk());
+        
+        HashMap param = new HashMap();
+        param.put("noIndukSiswa", noInduk);
+        JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\WIN 10\\Documents\\NetBeansProjects\\TPAAzkaAiniya\\src\\tpaazkaainiya\\output\\LaporanSPPSiswa.jrxml");
+ 
+        JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+            
+        JasperPrint jPrint = JasperFillManager.fillReport(jReport,param ,connectionDatabase.connect());
+        JasperViewer.viewReport(jPrint, false);
+    }
     
 
 }

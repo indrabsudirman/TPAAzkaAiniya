@@ -935,7 +935,12 @@ public final class Laporan extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            tpaAzkaAiniya.cetakLaporanSPP();
+        } catch (JRException | SQLException ex) {
+            Logger.getLogger(Laporan.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
